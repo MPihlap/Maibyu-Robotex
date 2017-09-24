@@ -28,10 +28,7 @@ while True:
     # grab the current frame
     (grabbed, frame) = camera.read()
 
-    # resize the frame, blur it, and convert it to the HSV
-    # color space
-    frame = imutils.resize(frame, width=600)
-    # blurred = cv2.GaussianBlur(frame, (11, 11), 0)
+    
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
     # construct a mask for the color "green", then perform
@@ -63,10 +60,10 @@ while True:
             cv2.circle(frame, (int(x), int(y)), int(radius),
                        (0, 255, 255), 2)
             cv2.circle(frame, center, 5, (0, 0, 255), -1)
+            cv2.putText(frame, str(center), (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 1,cv2.COLOR_BAYER_BG2BGR)
 
     # update the points queue
     pts.appendleft(center)
-    cv2.putText(frame,radius,(10,500), cv2.FONT_HERSHEY_SIMPLEX, 2, 2)
 
     # show the frame to our screen
     cv2.imshow("Frame", frame)
