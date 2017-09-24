@@ -1,4 +1,7 @@
-# import the necessary packages
+"""
+Code to track an orange object.
+Inspired by http://www.pyimagesearch.com/2015/09/14/ball-tracking-with-opencv/
+"""
 from collections import deque
 import numpy as np
 import argparse
@@ -11,21 +14,16 @@ ap.add_argument("-b", "--buffer", type=int, default=64,
                 help="max buffer size")
 args = vars(ap.parse_args())
 
-# define the lower and upper boundaries of the "green"
+# define the lower and upper boundaries of the "orange"
 # ball in the HSV color space, then initialize the
 # list of tracked points
 greenLower = (0, 56, 117)
 greenUpper = (87, 182, 217)
 pts = deque(maxlen=args["buffer"])
 
-# if a video path was not supplied, grab the reference
-# to the webcam
-
-
+#grab the reference to the webcam
 camera = cv2.VideoCapture(1)
 
-# otherwise, grab a reference to the video file
-# keep looping
 while True:
     # grab the current frame
     (grabbed, frame) = camera.read()
