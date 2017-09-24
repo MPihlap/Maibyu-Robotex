@@ -68,6 +68,7 @@ while True:
 
     # update the points queue
     pts.appendleft(center)
+    cv2.putText(frame,radius,(10,500), cv2.FONT_HERSHEY_SIMPLEX, 2, 2)
 
     # show the frame to our screen
     cv2.imshow("Frame", frame)
