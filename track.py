@@ -8,8 +8,6 @@ import cv2
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
-ap.add_argument("-v", "--video",
-                help="path to the (optional) video file")
 ap.add_argument("-b", "--buffer", type=int, default=64,
                 help="max buffer size")
 args = vars(ap.parse_args())
@@ -23,12 +21,10 @@ pts = deque(maxlen=args["buffer"])
 
 # if a video path was not supplied, grab the reference
 # to the webcam
-if not args.get("video", False):
-    camera = cv2.VideoCapture(1)
+
+camera = cv2.VideoCapture(1)
 
 # otherwise, grab a reference to the video file
-else:
-    camera = cv2.VideoCapture(args["video"])
 
 # keep looping
 while True:
