@@ -1,4 +1,3 @@
-
 # import the necessary packages
 from collections import deque
 import numpy as np
@@ -8,8 +7,7 @@ import cv2
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
-ap.add_argument("-v", "--video",
-                help="path to the (optional) video file")
+
 ap.add_argument("-b", "--buffer", type=int, default=64,
                 help="max buffer size")
 args = vars(ap.parse_args())
@@ -17,28 +15,20 @@ args = vars(ap.parse_args())
 # define the lower and upper boundaries of the "green"
 # ball in the HSV color space, then initialize the
 # list of tracked points
-greenLower = (0,56,117)
-greenUpper = (87, 182 ,217)
+greenLower = (0, 56, 117)
+greenUpper = (87, 182, 217)
 pts = deque(maxlen=args["buffer"])
 
 # if a video path was not supplied, grab the reference
 # to the webcam
-if not args.get("video", False):
-    camera = cv2.VideoCapture(1)
+
+camera = cv2.VideoCapture(1)
 
 # otherwise, grab a reference to the video file
-else:
-    camera = cv2.VideoCapture(args["video"])
-
 # keep looping
 while True:
     # grab the current frame
     (grabbed, frame) = camera.read()
-
-    # if we are viewing a video and we did not grab a frame,
-    # then we have reached the end of the video
-    if args.get("video") and not grabbed:
-        break
 
     # resize the frame, blur it, and convert it to the HSV
     # color space
@@ -78,17 +68,6 @@ while True:
 
     # update the points queue
     pts.appendleft(center)
-    # loop over the set of tracked points
-    for i in range(1, len(pts)):
-        # if either of the tracked points are None, ignore
-        # them
-        if pts[i - 1] is None or pts[i] is None:
-            continue
-
-        # otherwise, compute the thickness of the line and
-        # draw the connecting lines
-        thickness = int(np.sqrt(args["buffer"] / float(i + 1)) * 2.5)
-        cv2.line(frame, pts[i - 1], pts[i], (0, 0, 255), thickness)
 
     # show the frame to our screen
     cv2.imshow("Frame", frame)
