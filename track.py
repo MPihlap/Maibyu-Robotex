@@ -58,7 +58,8 @@ while True:
             cv2.circle(frame, (int(x), int(y)), int(radius),
                        (0, 255, 255), 2)
             cv2.circle(frame, center, 5, (0, 0, 255), -1)
-            cv2.putText(frame, str(center), (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, cv2.COLOR_BAYER_BG2BGR)
+            cv2.putText(frame, str(center), (10, 100), cv2.FONT_HERSHEY_DUPLEX, 1, cv2.COLOR_YUV420sp2GRAY)
+            cv2.putText(frame, str(round(radius*2,0)), (10, 300), cv2.FONT_HERSHEY_DUPLEX, 1, cv2.COLOR_YUV420sp2GRAY)
     # update the points queue
     pts.appendleft(center)
 
