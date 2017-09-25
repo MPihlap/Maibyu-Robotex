@@ -27,8 +27,6 @@ camera = cv2.VideoCapture(1)
 while True:
     # grab the current frame
     (grabbed, frame) = camera.read()
-
-    
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
     # construct a mask for the color "green", then perform
