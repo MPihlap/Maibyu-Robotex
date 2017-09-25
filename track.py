@@ -17,8 +17,8 @@ args = vars(ap.parse_args())
 # define the lower and upper boundaries of the "orange"
 # ball in the HSV color space, then initialize the
 # list of tracked points
-orangeLower = (8, 56, 117)
-orangeUpper = (87, 182, 217)
+orangeLower = (49, 35, 72)
+orangeUpper = (80,108,204)
 pts = deque(maxlen=args["buffer"])
 
 #grab the reference to the webcam
