@@ -24,6 +24,7 @@ pts = deque(maxlen=args["buffer"])
 #grab the reference to the webcam
 camera = cv2.VideoCapture(1)
 
+
 while True:
     # grab the current frame
     (grabbed, frame) = camera.read()
@@ -33,8 +34,8 @@ while True:
     # a series of dilations and erosions to remove any small
     # blobs left in the mask
     mask = cv2.inRange(hsv, orangeLower, orangeUpper)
-    mask = cv2.erode(mask, None, iterations=2)
-    mask = cv2.dilate(mask, None, iterations=2)
+    mask = cv2.erode(mask, None, iterations=1)
+    mask = cv2.dilate(mask, None, iterations=1)
     # find contours in the mask and initialize the current
     # (x, y) center of the ball
     cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL,
@@ -55,6 +56,7 @@ while True:
         if radius > 10:
             # draw the circle and centroid on the frame,
             # then update the list of tracked points
+
             cv2.circle(frame, (int(x), int(y)), int(radius),
                        (0, 255, 255), 2)
             cv2.circle(frame, center, 5, (0, 0, 255), -1)
@@ -64,7 +66,7 @@ while True:
     pts.appendleft(center)
 
     # show the frame to our screen
-    cv2.imshow("Frame", frame)
+    cv2.imshow("Frame", mask  )
     key = cv2.waitKey(1) & 0xFF
 
     # if the 'q' key is pressed, stop the loop
