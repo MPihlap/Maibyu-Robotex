@@ -1,29 +1,16 @@
-"""
-Code to track an orange object.
-Inspired by http://www.pyimagesearch.com/2015/09/14/ball-tracking-with-opencv/
-"""
 from collections import deque
-import numpy as np
-import argparse
-import imutils
 import cv2
 
-# construct the argument parse and parse the arguments
-ap = argparse.ArgumentParser()
-ap.add_argument("-b", "--buffer", type=int, default=64,
-                help="max buffer size")
-args = vars(ap.parse_args())
 
-# define the lower and upper boundaries of the "orange"
+# define the lower and upper boundaries of the
 # ball in the HSV color space, then initialize the
 # list of tracked points
-orangeLower = (49, 35, 72)
-orangeUpper = (80,108,204)
-pts = deque(maxlen=args["buffer"])
+greenLower = (49, 35, 72)
+greenUpper = (80, 108, 204)
+pts = deque()
 
 #grab the reference to the webcam
 camera = cv2.VideoCapture(1)
-
 
 while True:
     # grab the current frame
@@ -33,7 +20,7 @@ while True:
     # construct a mask for the color "green", then perform
     # a series of dilations and erosions to remove any small
     # blobs left in the mask
-    mask = cv2.inRange(hsv, orangeLower, orangeUpper)
+    mask = cv2.inRange(hsv, greenLower, greenUpper)
     mask = cv2.erode(mask, None, iterations=1)
     mask = cv2.dilate(mask, None, iterations=1)
     # find contours in the mask and initialize the current
@@ -62,11 +49,12 @@ while True:
             cv2.circle(frame, center, 5, (0, 0, 255), -1)
             cv2.putText(frame, str(center), (10, 100), cv2.FONT_HERSHEY_DUPLEX, 1, cv2.COLOR_YUV420sp2GRAY)
             cv2.putText(frame, str(round(radius*2,0)), (10, 300), cv2.FONT_HERSHEY_DUPLEX, 1, cv2.COLOR_YUV420sp2GRAY)
+
     # update the points queue
     pts.appendleft(center)
 
     # show the frame to our screen
-    cv2.imshow("Frame", mask  )
+    cv2.imshow("Frame", frame  )
     key = cv2.waitKey(1) & 0xFF
 
     # if the 'q' key is pressed, stop the loop
