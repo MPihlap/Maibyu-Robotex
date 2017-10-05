@@ -7,6 +7,9 @@ import cv2
 # list of tracked points
 greenLower = (49, 35, 72)
 greenUpper = (80, 108, 204)
+
+blueLower = (101,107,94)
+blueUpper = (115,147,134)
 pts = deque()
 
 #grab the reference to the webcam
