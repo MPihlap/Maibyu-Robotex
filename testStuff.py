@@ -74,7 +74,7 @@ def trackObject(isBall, camera, pts):
 pts = deque()
 
 # grab the reference to the webcam
-camera = cv2.VideoCapture(1)
+camera = cv2.VideoCapture(0)
 trackObject(False, camera, pts)
 # cleanup the camera and close any open windows
 camera.release()
