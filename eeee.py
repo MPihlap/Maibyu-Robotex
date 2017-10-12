@@ -1,6 +1,16 @@
 from collections import deque
 import cv2
+import serial
 import numpy as np
+
+dist = 0.115
+wheelone = 0
+wheeltwo = 120
+wheelthree = 240
+
+
+ser = serial.Serial('COM3',baudrate=115200,timeout = 0.8,dsrdtr=True)
+print(ser.isOpen())
 
 
 # define the lower and upper boundaries of the
@@ -10,35 +20,46 @@ greenLower = (49, 35, 72)
 greenUpper = (80, 108, 204)
 blueLower = (101, 91, 42)
 blueUpper = (122, 185, 129)
+pallKeskel = False
+korvKeskel = False
+
 pts = deque()
 img = np.zeros((480, 640, 3), np.uint8)
 def joonistaAsi(cnts):
 
-    # only proceed if at least one contour was found
-    if len(cnts) > 0:
-        # find the largest contour in the mask, then use
-        # it to compute the minimum enclosing circle and
-        # centroid
-        c = max(cnts, key=cv2.contourArea)
-        ((x, y), radius) = cv2.minEnclosingCircle(c)
-        M = cv2.moments(c)
-        if M["m00"] > 0:
-            center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
+    # find the largest contour in the mask, then use
+    # it to compute the minimum enclosing circle and
+    # centroid
+    c = max(cnts, key=cv2.contourArea)
+    ((x, y), radius) = cv2.minEnclosingCircle(c)
+    M = cv2.moments(c)
+    if M["m00"] > 0:
+        center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
 
-        # only proceed if the radius meets a minimum size
-            if radius > 10:
-            # draw the circle and centroid on the frame,
-            # then update the list of tracked points
+    # only proceed if the radius meets a minimum size
+        if radius > 10:
+        # draw the circle and centroid on the frame,
+        # then update the list of tracked points
 
-                cv2.circle(frame, (int(x), int(y)), int(radius),
-                           (0, 255, 255), 2)
-                cv2.circle(frame, center, 5, (0, 0, 255), -1)
-                cv2.putText(frame, str(center), center, cv2.FONT_HERSHEY_DUPLEX, 1, cv2.COLOR_YUV420sp2GRAY)
-                cv2.putText(frame, str(round((radius**2)*3.14)), (center[0]+200,center[1]), cv2.FONT_HERSHEY_DUPLEX, 1, cv2.COLOR_YUV420sp2GRAY)
+            cv2.circle(frame, (int(x), int(y)), int(radius),
+                       (0, 255, 255), 2)
+            cv2.circle(frame, center, 5, (0, 0, 255), -1)
+            cv2.putText(frame, str(center), center, cv2.FONT_HERSHEY_DUPLEX, 1, cv2.COLOR_YUV420sp2GRAY)
+            cv2.putText(frame, str(round((radius**2)*3.14)), (center[0]+200,center[1]), cv2.FONT_HERSHEY_DUPLEX, 1, cv2.COLOR_YUV420sp2GRAY)
+    return x,y
 
 #grab the reference to the webcam
 camera = cv2.VideoCapture(0)
 kernel = np.ones((5,5), np.uint8)
+
+
+def kasKeskel(x):
+    if x >= 310 and pallx < 330:
+        return True
+    else:
+        return False
+
+
 while True:
     # grab the current frame
     (grabbed, frame) = camera.read()
@@ -65,11 +86,27 @@ while True:
                             cv2.CHAIN_APPROX_SIMPLE)[-2]
     cntsPurple = cv2.findContours(maskBlue, cv2.RETR_EXTERNAL,
                                   cv2.CHAIN_APPROX_SIMPLE)[-2]
-    joonistaAsi(cnts)
-    joonistaAsi(cntsPurple)
+    pallKeskel = False
+    korvKeskel = False
+    mõlemadKeskel = False
+    if len(cnts) > 0:
+        pallx, pally = joonistaAsi(cnts)
+        pallKeskel = kasKeskel(pallx)
+        if pallKeskel:
+            cv2.putText(frame, "Pall on keskel!", (10, 330), cv2.FONT_HERSHEY_DUPLEX, 1,
+                        cv2.COLOR_YUV420sp2GRAY)
 
+    if len(cntsPurple) > 0:
+        korvx, korvy = joonistaAsi(cntsPurple)
+        korvKeskel = kasKeskel(korvx)
+        if korvKeskel:
+            cv2.putText(frame, "Korv on keskel!", (10, 350), cv2.FONT_HERSHEY_DUPLEX, 1,
+                        cv2.COLOR_YUV420sp2GRAY)
+    if pallKeskel & korvKeskel:
+        mõlemadKeskel = True
+        cv2.putText(frame, "Mõlemad on keskel! :O", (10, 370), cv2.FONT_HERSHEY_DUPLEX, 1,
+                    cv2.COLOR_YUV420sp2GRAY)
     center = None
-
 
 
     # update the points queue

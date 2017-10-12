@@ -58,6 +58,10 @@ def trackObject(isBall, camera, pts):
                 center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
                 if x > 10 and y > 10:
                     cv2.rectangle(frame,(x,y),(x+w,y+h),(0, 255, 255), 2)
+                    cv2.putText(frame, "Laius: "+str(round(w)), (10, 300), cv2.FONT_HERSHEY_DUPLEX, 1,
+                            cv2.COLOR_YUV420sp2GRAY)
+                cv2.putText(frame, "Pikkus: " + str(round(h)), (10, 350), cv2.FONT_HERSHEY_DUPLEX, 1,
+                            cv2.COLOR_YUV420sp2GRAY)
 
 
 
