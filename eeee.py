@@ -2,6 +2,8 @@ from collections import deque
 import cv2
 import serial
 import numpy as np
+import driveTest as drive
+
 
 dist = 0.115
 wheelone = 0
@@ -93,8 +95,16 @@ while True:
         pallx, pally = joonistaAsi(cnts)
         pallKeskel = kasKeskel(pallx)
         if pallKeskel:
+            drive.setspeed(90)
             cv2.putText(frame, "Pall on keskel!", (10, 330), cv2.FONT_HERSHEY_DUPLEX, 1,
                         cv2.COLOR_YUV420sp2GRAY)
+        else:
+            if pallx < 310:
+                drive.spinright()
+            else:
+                drive.spinleft()
+    else:
+        drive.spinleft()
 
     if len(cntsPurple) > 0:
         korvx, korvy = joonistaAsi(cntsPurple)
@@ -104,7 +114,7 @@ while True:
                         cv2.COLOR_YUV420sp2GRAY)
     if pallKeskel & korvKeskel:
         mõlemadKeskel = True
-        cv2.putText(frame, "Mõlemad on keskel! :O", (10, 370), cv2.FONT_HERSHEY_DUPLEX, 1,
+        cv2.putText(frame, "Molemad on keskel! :O", (10, 370), cv2.FONT_HERSHEY_DUPLEX, 1,
                     cv2.COLOR_YUV420sp2GRAY)
     center = None
 

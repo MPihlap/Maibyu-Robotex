@@ -25,7 +25,7 @@ def shutdown():
     ser.write('sd0:0:0\r\n'.encode('utf-8'))
 
 def spinright():
-    ser.write('sd10:10:10\r\n'.encode('utf-8'))
+    ser.write('sd-10:-10:-10\r\n'.encode('utf-8'))
 
 def spinleft():
     ser.write('sd10:10:10\r\n'.encode('utf-8'))
