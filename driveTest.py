@@ -25,10 +25,10 @@ def shutdown():
     ser.write('sd0:0:0\r\n'.encode('utf-8'))
 
 def spinright():
-    ser.write('sd-10:-10:-10\r\n'.encode('utf-8'))
+    ser.write('sd-2:-2:-2\r\n'.encode('utf-8'))
 
 def spinleft():
-    ser.write('sd10:10:10\r\n'.encode('utf-8'))
+    ser.write('sd2:2:2\r\n'.encode('utf-8'))
 
 
 def setspeed(suund):
@@ -46,11 +46,11 @@ def setspeed(suund):
     print("mootor3")
     print(spd3)
 #setspeed(180)
-frame = np.zeros((200,200))
-while(True):
+#frame = np.zeros((200,200))
+"""while(True):
     cv2.imshow("Frame", frame)
     key = cv2.waitKey(1) & 0xFF
-    print(key)
+    #print(key)
     # if the 'q' key is pressed, stop the loop
     if key == ord("w"):
         setspeed(90)
@@ -65,7 +65,7 @@ while(True):
         shutdown()
         ##cv2.imwrite("test.png", frame)
         break
-
+"""
 
 
 #print(wheelLogic(1,wheelone,dist,1,180))

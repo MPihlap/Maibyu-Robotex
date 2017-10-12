@@ -11,8 +11,8 @@ wheeltwo = 120
 wheelthree = 240
 
 
-ser = serial.Serial('COM3',baudrate=115200,timeout = 0.8,dsrdtr=True)
-print(ser.isOpen())
+#ser = serial.Serial('COM3',baudrate=115200,timeout = 0.8,dsrdtr=True)
+#qprint(ser.isOpen())
 
 
 # define the lower and upper boundaries of the
@@ -51,12 +51,12 @@ def joonistaAsi(cnts):
     return x,y
 
 #grab the reference to the webcam
-camera = cv2.VideoCapture(0)
+camera = cv2.VideoCapture(1)
 kernel = np.ones((5,5), np.uint8)
 
 
 def kasKeskel(x):
-    if x >= 310 and pallx < 330:
+    if x >= 310 and x < 330:
         return True
     else:
         return False
@@ -95,7 +95,8 @@ while True:
         pallx, pally = joonistaAsi(cnts)
         pallKeskel = kasKeskel(pallx)
         if pallKeskel:
-            drive.setspeed(90)
+            drive.shutdown()
+            #drive.setspeed(90)
             cv2.putText(frame, "Pall on keskel!", (10, 330), cv2.FONT_HERSHEY_DUPLEX, 1,
                         cv2.COLOR_YUV420sp2GRAY)
         else:
@@ -103,15 +104,16 @@ while True:
                 drive.spinright()
             else:
                 drive.spinleft()
-    else:
-        drive.spinleft()
+    """else:
+        drive.spinleft()"""
 
-    if len(cntsPurple) > 0:
+    """if len(cntsPurple) > 0:
         korvx, korvy = joonistaAsi(cntsPurple)
         korvKeskel = kasKeskel(korvx)
         if korvKeskel:
             cv2.putText(frame, "Korv on keskel!", (10, 350), cv2.FONT_HERSHEY_DUPLEX, 1,
                         cv2.COLOR_YUV420sp2GRAY)
+    """
     if pallKeskel & korvKeskel:
         mõlemadKeskel = True
         cv2.putText(frame, "Molemad on keskel! :O", (10, 370), cv2.FONT_HERSHEY_DUPLEX, 1,
@@ -128,6 +130,7 @@ while True:
     # if the 'q' key is pressed, stop the loop
     if key == ord("q"):
         ##cv2.imwrite("test.png", frame)
+        drive.shutdown()
         break
 
 # cleanup the camera and close any open windows
