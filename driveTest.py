@@ -24,6 +24,12 @@ def wheelLogic(robotspeed, wheel, dist,suund):
 def shutdown():
     ser.write('sd0:0:0\r\n'.encode('utf-8'))
 
+def spinright():
+    ser.write('sd10:10:10\r\n'.encode('utf-8'))
+
+def spinleft():
+    ser.write('sd10:10:10\r\n'.encode('utf-8'))
+
 
 def setspeed(suund):
     spd1= int(wheelLogic(-20, wheelone, dist,suund))
