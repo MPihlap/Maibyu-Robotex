@@ -37,7 +37,7 @@ def joonistaAsi(cnts):
                 cv2.putText(frame, str(round((radius**2)*3.14)), (center[0]+200,center[1]), cv2.FONT_HERSHEY_DUPLEX, 1, cv2.COLOR_YUV420sp2GRAY)
 
 #grab the reference to the webcam
-camera = cv2.VideoCapture(1)
+camera = cv2.VideoCapture(0)
 kernel = np.ones((5,5), np.uint8)
 while True:
     # grab the current frame
