@@ -1,6 +1,16 @@
 from collections import deque
 import cv2
+import serial
 import numpy as np
+
+dist = 0.115
+wheelone = 0
+wheeltwo = 120
+wheelthree = 240
+
+
+ser = serial.Serial('COM3',baudrate=115200,timeout = 0.8,dsrdtr=True)
+print(ser.isOpen())
 
 
 # define the lower and upper boundaries of the
