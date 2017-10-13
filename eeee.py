@@ -24,6 +24,7 @@ blueLower = (101, 91, 42)
 blueUpper = (122, 185, 129)
 pallKeskel = False
 korvKeskel = False
+sõidanOtse = False
 
 pts = deque()
 img = np.zeros((480, 640, 3), np.uint8)
@@ -56,7 +57,7 @@ kernel = np.ones((5,5), np.uint8)
 
 
 def kasKeskel(x):
-    if x >= 310 and x < 330:
+    if x >= 315 and x < 325:
         return True
     else:
         return False
@@ -88,6 +89,7 @@ while True:
                             cv2.CHAIN_APPROX_SIMPLE)[-2]
     cntsPurple = cv2.findContours(maskBlue, cv2.RETR_EXTERNAL,
                                   cv2.CHAIN_APPROX_SIMPLE)[-2]
+
     pallKeskel = False
     korvKeskel = False
     mõlemadKeskel = False
@@ -95,17 +97,21 @@ while True:
         pallx, pally = joonistaAsi(cnts)
         pallKeskel = kasKeskel(pallx)
         if pallKeskel:
-            drive.shutdown()
-            #drive.setspeed(90)
+            if not sõidanOtse:
+                drive.shutdown()
+                sõidanOtse = True
+                drive.setspeed(90)
             cv2.putText(frame, "Pall on keskel!", (10, 330), cv2.FONT_HERSHEY_DUPLEX, 1,
                         cv2.COLOR_YUV420sp2GRAY)
         else:
-            if pallx < 310:
+            sõidanOtse = False
+            if pallx < 315:
                 drive.spinright()
             else:
                 drive.spinleft()
-    """else:
-        drive.spinleft()"""
+
+    else:
+        drive.spinleft()
 
     """if len(cntsPurple) > 0:
         korvx, korvy = joonistaAsi(cntsPurple)

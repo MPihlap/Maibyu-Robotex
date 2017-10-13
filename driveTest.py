@@ -12,7 +12,7 @@ wheelthree = 240
 
 
 ser = serial.Serial('COM3',baudrate=115200,timeout = 0.8,dsrdtr=True)
-print(ser.isOpen())
+#print(ser.isOpen())
 
 #wheelLinearVelocity = robotSpeed * cos(robotDirectionAngle - wheelAngle) + wheelDistanceFromCenter * robotAngularVelocity
 
@@ -45,9 +45,11 @@ def setspeed(suund):
     print(spd2)
     print("mootor3")
     print(spd3)
-#setspeed(180)
-#frame = np.zeros((200,200))
-"""while(True):
+
+"""
+setspeed(180)
+frame = np.zeros((200,200))
+while(True):
     cv2.imshow("Frame", frame)
     key = cv2.waitKey(1) & 0xFF
     #print(key)
@@ -65,8 +67,8 @@ def setspeed(suund):
         shutdown()
         ##cv2.imwrite("test.png", frame)
         break
-"""
 
+"""
 
 #print(wheelLogic(1,wheelone,dist,1,180))
 
