@@ -25,10 +25,10 @@ def shutdown():
     ser.write('sd0:0:0\r\n'.encode('utf-8'))
 
 def spinright():
-    ser.write('sd-2:-2:-2\r\n'.encode('utf-8'))
+    ser.write('sd-9:-9:-9\r\n'.encode('utf-8'))
 
 def spinleft():
-    ser.write('sd2:2:2\r\n'.encode('utf-8'))
+    ser.write('sd9:9:9\r\n'.encode('utf-8'))
 
 
 def setspeed(suund):
@@ -39,13 +39,13 @@ def setspeed(suund):
 
     ser.write('f0\r\n'.encode('utf-8'))
     ser.write(text.encode('utf-8'))
-    print("mootor1")
-    print(spd1)
-    print("mootor2")
-    print(spd2)
-    print("mootor3")
-    print(spd3)
-
+    """"""
+#    print("mootor1")
+ #   print(spd1)
+   # print("mootor2")
+  #  print(spd2)
+    #print("mootor3")
+    #print(spd3)
 """
 setspeed(180)
 frame = np.zeros((200,200))

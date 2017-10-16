@@ -18,11 +18,13 @@ wheelthree = 240
 # define the lower and upper boundaries of the
 # ball in the HSV color space, then initialize the
 # list of tracked points
-greenLower = (49, 35, 72)
-greenUpper = (80, 108, 204)
+#greenLower = (49, 35, 72)
+#greenUpper = (80, 108, 204)
+greenLower = (0, 113, 126)
+greenUpper = (13, 196, 255)
 blueLower = (101, 91, 42)
 blueUpper = (122, 185, 129)
-pallKeskel = False
+#pallKeskel = False
 korvKeskel = False
 sõidanOtse = False
 
@@ -34,6 +36,10 @@ def joonistaAsi(cnts):
     # it to compute the minimum enclosing circle and
     # centroid
     c = max(cnts, key=cv2.contourArea)
+    pindala = cv2.contourArea(c)
+    print(pindala)
+    if pindala < 70:
+        return -1,-1
     ((x, y), radius) = cv2.minEnclosingCircle(c)
     M = cv2.moments(c)
     if M["m00"] > 0:
@@ -57,7 +63,7 @@ kernel = np.ones((5,5), np.uint8)
 
 
 def kasKeskel(x):
-    if x >= 315 and x < 325:
+    if x >= 300 and x < 340:
         return True
     else:
         return False
@@ -94,24 +100,31 @@ while True:
     korvKeskel = False
     mõlemadKeskel = False
     if len(cnts) > 0:
+        #print(len(cnts))
         pallx, pally = joonistaAsi(cnts)
         pallKeskel = kasKeskel(pallx)
-        if pallKeskel:
+        if pallx ==-1:
+            drive.spinleft()
+        elif pallKeskel:
+            print(pallKeskel)
             if not sõidanOtse:
                 drive.shutdown()
                 sõidanOtse = True
                 drive.setspeed(90)
-            cv2.putText(frame, "Pall on keskel!", (10, 330), cv2.FONT_HERSHEY_DUPLEX, 1,
-                        cv2.COLOR_YUV420sp2GRAY)
+            cv2.putText(mask, "Pall on keskel!", (10, 330), cv2.FONT_HERSHEY_DUPLEX, 1,
+                        cv2.COLOR_YUV2GRAY_420)
         else:
             sõidanOtse = False
-            if pallx < 315:
+            pallKeskel = False
+
+            if pallx < 300:
                 drive.spinright()
-            else:
+
+            elif pallx> 340:
                 drive.spinleft()
 
     else:
-        drive.spinleft()
+         drive.spinleft()
 
     """if len(cntsPurple) > 0:
         korvx, korvy = joonistaAsi(cntsPurple)
@@ -130,7 +143,7 @@ while True:
     # update the points queue
     pts.appendleft(center)
     # show the frame to our screen
-    cv2.imshow("Frame", frame  )
+    cv2.imshow("Frame", mask  )
     key = cv2.waitKey(1) & 0xFF
 
     # if the 'q' key is pressed, stop the loop
