@@ -2,18 +2,7 @@ from collections import deque
 import cv2
 import serial
 import numpy as np
-import driveTest as drive
-
-
-dist = 0.115
-wheelone = 0
-wheeltwo = 120
-wheelthree = 240
-
-
-#ser = serial.Serial('COM3',baudrate=115200,timeout = 0.8,dsrdtr=True)
-#qprint(ser.isOpen())
-
+import Robot
 
 # define the lower and upper boundaries of the
 # ball in the HSV color space, then initialize the
@@ -25,10 +14,11 @@ blueUpper = (122, 185, 129)
 pallKeskel = False
 korvKeskel = False
 sõidanOtse = False
+robot = Robot.Robot()
 
 pts = deque()
 img = np.zeros((480, 640, 3), np.uint8)
-def joonistaAsi(cnts):
+def drawThing(cnts):
 
     # find the largest contour in the mask, then use
     # it to compute the minimum enclosing circle and
@@ -56,8 +46,8 @@ camera = cv2.VideoCapture(1)
 kernel = np.ones((5,5), np.uint8)
 
 
-def kasKeskel(x):
-    if x >= 315 and x < 325:
+def isBallMiddle(x, dif):
+    if x >= 320 - dif/2 and x < 320 + dif/2:
         return True
     else:
         return False
@@ -90,10 +80,20 @@ while True:
     cntsPurple = cv2.findContours(maskBlue, cv2.RETR_EXTERNAL,
                                   cv2.CHAIN_APPROX_SIMPLE)[-2]
 
-    pallKeskel = False
-    korvKeskel = False
-    mõlemadKeskel = False
+
     if len(cnts) > 0:
+        ballx, bally = drawThing(cnts)
+        ballMiddle = isBallMiddle(ballx, 6)
+        if ballMiddle:
+            robot.stopMoving()
+            robot.driveStraight()
+            cv2.putText(frame, "Ball is middle!", (10, 330), cv2.FONT_HERSHEY_DUPLEX, 1,
+                        cv2.COLOR_YUV420sp2GRAY)
+        else:
+            robot.turnToBall(ballx,6)
+    else:
+        robot.turnLeft()
+    """if len(cnts) > 0:
         pallx, pally = joonistaAsi(cnts)
         pallKeskel = kasKeskel(pallx)
         if pallKeskel:
@@ -112,7 +112,7 @@ while True:
 
     else:
         drive.spinleft()
-
+    """
     """if len(cntsPurple) > 0:
         korvx, korvy = joonistaAsi(cntsPurple)
         korvKeskel = kasKeskel(korvx)
@@ -136,7 +136,7 @@ while True:
     # if the 'q' key is pressed, stop the loop
     if key == ord("q"):
         ##cv2.imwrite("test.png", frame)
-        drive.shutdown()
+        robot.stopMoving()
         break
 
 # cleanup the camera and close any open windows
