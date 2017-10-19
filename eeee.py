@@ -3,7 +3,7 @@ import cv2
 import serial
 import numpy as np
 import driveTest as drive
-
+import math
 
 dist = 0.115
 wheelone = 0
@@ -18,10 +18,10 @@ wheelthree = 240
 # define the lower and upper boundaries of the
 # ball in the HSV color space, then initialize the
 # list of tracked points
-#greenLower = (49, 35, 72)
-#greenUpper = (80, 108, 204)
-greenLower = (0, 113, 126)
-greenUpper = (13, 196, 255)
+greenLower = (49, 35, 72)
+greenUpper = (80, 108, 204)
+#greenLower = (0, 113, 126)
+#greenUpper = (13, 196, 255)
 blueLower = (101, 91, 42)
 blueUpper = (122, 185, 129)
 #pallKeskel = False
@@ -44,7 +44,7 @@ def joonistaAsi(cnts):
     M = cv2.moments(c)
     if M["m00"] > 0:
         center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
-
+        print("Raadius: "+ str(radius))
     # only proceed if the radius meets a minimum size
         if radius > 10:
         # draw the circle and centroid on the frame,
@@ -63,10 +63,13 @@ kernel = np.ones((5,5), np.uint8)
 
 
 def kasKeskel(x):
-    if x >= 300 and x < 340:
+    if x >= 307 and x < 317:
         return True
     else:
         return False
+def leiaNurk(x, y):
+    return int(math.degrees(math.atan((313-x)/y))+90) # 313 mõõtmiste tulemusena leitud keskmine
+
 
 
 while True:
@@ -102,7 +105,23 @@ while True:
     if len(cnts) > 0:
         #print(len(cnts))
         pallx, pally = joonistaAsi(cnts)
+        nurk = leiaNurk(pallx,pally)
+        #print(str(pallx)+" "+ str(pally)+" "+str(nurk))
+        print(pallx)
         pallKeskel = kasKeskel(pallx)
+
+        if pally > 400:
+            if pallKeskel:
+                drive.shutdown()
+            else:
+                if pallx < 307:
+                    drive.setspeed(180, 10)
+                else:
+                    drive.setspeed(0, 10)
+
+        else:
+            drive.setspeed(nurk, 20)
+        """
         if pallx ==-1:
             drive.spinleft()
         elif pallKeskel:
@@ -122,9 +141,10 @@ while True:
 
             elif pallx> 340:
                 drive.spinleft()
-
+    """
     else:
-         drive.spinleft()
+        pass
+        #drive.spinleft()
 
     """if len(cntsPurple) > 0:
         korvx, korvy = joonistaAsi(cntsPurple)
@@ -138,12 +158,12 @@ while True:
         cv2.putText(frame, "Molemad on keskel! :O", (10, 370), cv2.FONT_HERSHEY_DUPLEX, 1,
                     cv2.COLOR_YUV420sp2GRAY)
     center = None
-
+    cv2.line(frame,(313,0),(313,480),(255,0,0), 1)
 
     # update the points queue
     pts.appendleft(center)
     # show the frame to our screen
-    cv2.imshow("Frame", mask  )
+    cv2.imshow("Frame", frame  )
     key = cv2.waitKey(1) & 0xFF
 
     # if the 'q' key is pressed, stop the loop
