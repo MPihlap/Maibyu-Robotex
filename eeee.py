@@ -85,7 +85,7 @@ while True:
         ballx, bally = drawThing(cnts)
         ballMiddle = isBallMiddle(ballx, 6)
         if ballMiddle:
-            robot.stopMoving()
+            #robot.stopMoving()
             robot.driveStraight()
             cv2.putText(frame, "Ball is middle!", (10, 330), cv2.FONT_HERSHEY_DUPLEX, 1,
                         cv2.COLOR_YUV420sp2GRAY)
