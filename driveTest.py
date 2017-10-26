@@ -26,27 +26,27 @@ def stopThrow():
     ser.write('d:1000\r\n'.encode('utf-8'))
 
 def shutdown():
-    ser.write('sd0:0:0\r\n'.encode('utf-8'))
+    ser.write('sd:0:0:0\r\n'.encode('utf-8'))
 
 
 def spinright():
-    ser.write('sd-9:-9:-9\r\n'.encode('utf-8'))
+    ser.write('sd:-9:-9:-9\r\n'.encode('utf-8'))
 
 
 def spinleft():
-    ser.write('sd9:9:9\r\n'.encode('utf-8'))
+    ser.write('sd:9:9:9\r\n'.encode('utf-8'))
 
 
 
 def circleBall():
-    ser.write('sd-9:0:0\r\n'.encode('utf-8'))
+    ser.write('sd:9:0:0\r\n'.encode('utf-8'))
 
 
 def setspeed(suund, speed):
     spd1 = int(wheelLogic(-speed, wheelone, dist, suund))
     spd2 = int(wheelLogic(-speed, wheeltwo, dist, suund))
     spd3 = int(wheelLogic(-speed, wheelthree, dist, suund))
-    text = ("sd" + str(spd1) + ":" + str(spd2) + ":" + str(spd3) + "\r\n")
+    text = ("sd:" + str(spd1) + ":" + str(spd2) + ":" + str(spd3) + "\r\n")
     ser.write('f0\r\n'.encode('utf-8'))
     ser.write(text.encode('utf-8'))
     """"""
