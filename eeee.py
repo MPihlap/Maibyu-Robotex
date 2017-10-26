@@ -143,7 +143,7 @@ while True:
     # update the points queue
     pts.appendleft(center)
     # show the frame to our screen
-    cv2.imshow("Frame", mask  )
+    cv2.imshow("Frame", frame)
     key = cv2.waitKey(1) & 0xFF
 
     # if the 'q' key is pressed, stop the loop
@@ -151,6 +151,7 @@ while True:
         ##cv2.imwrite("test.png", frame)
         drive.shutdown()
         break
+
 
 # cleanup the camera and close any open windows
 camera.release()

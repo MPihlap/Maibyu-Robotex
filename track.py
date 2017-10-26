@@ -8,6 +8,9 @@ import cv2
 greenLower = (49, 35, 72)
 greenUpper = (80, 108, 204)
 
+greenLower = (0, 113, 126)
+greenUpper = (13, 196, 255)
+
 blueLower = (101,107,94)
 blueUpper = (115,147,134)
 pts = deque()

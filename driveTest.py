@@ -22,26 +22,26 @@ def wheelLogic(robotspeed, wheel, dist, suund):
 
 
 def shutdown():
-    ser.write('sd0:0:0\r\n'.encode('utf-8'))
+    ser.write('sd:0:0:0\r\n'.encode('utf-8'))
 
 
 def spinright():
-    ser.write('sd-9:-9:-9\r\n'.encode('utf-8'))
+    ser.write('sd:-9:-9:-9\r\n'.encode('utf-8'))
 
 
 def spinleft():
-    ser.write('sd9:9:9\r\n'.encode('utf-8'))
+    ser.write('sd:9:9:9\r\n'.encode('utf-8'))
 
 
 def circleBall():
-    ser.write('sd-9:0:0\r\n'.encode('utf-8'))
+    ser.write('sd:-9:0:0\r\n'.encode('utf-8'))
 
 
 def setspeed(suund):
     spd1 = int(wheelLogic(-20, wheelone, dist, suund))
     spd2 = int(wheelLogic(-20, wheeltwo, dist, suund))
     spd3 = int(wheelLogic(-20, wheelthree, dist, suund))
-    text = ("sd" + str(spd1) + ":" + str(spd2) + ":" + str(spd3) + "\r\n")
+    text = ("sd:" + str(spd1) + ":" + str(spd2) + ":" + str(spd3) + "\r\n")
     ser.write('f0\r\n'.encode('utf-8'))
     ser.write(text.encode('utf-8'))
     """"""
