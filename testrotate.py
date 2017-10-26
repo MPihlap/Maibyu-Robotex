@@ -17,7 +17,6 @@ while(True):
         shutdown()
     if key == ord("r"):
         circleBall()
-
     if key == ord("q"):
         shutdown()
         ##cv2.imwrite("test.png", frame)
