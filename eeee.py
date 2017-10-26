@@ -16,7 +16,7 @@ wheelthree = 240
 
 ser = serial.Serial('COM3',baudrate=115200,timeout = 0.01,dsrdtr=True)
 gameIsOn = False
-n = 'aAB'
+n = 'rf:aAB'
 
 # define the lower and upper boundaries of the
 # ball in the HSV color space, then initialize the
@@ -28,12 +28,13 @@ greenUpper = (80, 108, 204)
 blueLower = (101, 91, 42)
 blueUpper = (122, 185, 129)
 #pallKeskel = False
-korvKeskel = False
+basketIsMiddle = False
 sõidanOtse = False
+circlingBall = False
 
 pts = deque()
 img = np.zeros((480, 640, 3), np.uint8)
-def joonistaAsi(cnts):
+def drawThing(cnts):
 
     # find the largest contour in the mask, then use
     # it to compute the minimum enclosing circle and
@@ -65,12 +66,12 @@ camera = cv2.VideoCapture(1)
 kernel = np.ones((5,5), np.uint8)
 
 
-def kasKeskel(x):
+def isMiddle(x):
     if x >= 307 and x < 317:
         return True
     else:
         return False
-def leiaNurk(x, y):
+def findAngle(x, y):
     return int(math.degrees(math.atan((313-x)/y))+90) # 313 mõõtmiste tulemusena leitud keskmine
 
 
@@ -118,28 +119,40 @@ while True:
             cntsPurple = cv2.findContours(maskBlue, cv2.RETR_EXTERNAL,
                                           cv2.CHAIN_APPROX_SIMPLE)[-2]
 
-            pallKeskel = False
-            korvKeskel = False
-            mõlemadKeskel = False
+            ballIsMiddle = False
+            basketIsMiddle = False
+            bothMiddle = False
             if len(cnts) > 0:
                 #print(len(cnts))
-                pallx, pally = joonistaAsi(cnts)
-                nurk = leiaNurk(pallx,pally)
+                ballx, bally = drawThing(cnts)
+                angle = findAngle(ballx, bally)
                 #print(str(pallx)+" "+ str(pally)+" "+str(nurk))
-                print(pallx)
-                pallKeskel = kasKeskel(pallx)
+                print(ballx)
+                ballIsMiddle = isMiddle(ballx)
 
-                if pally > 400:
-                    if pallKeskel:
+                if ballIsMiddle and basketIsMiddle: # If we have spun around the ball and are going to throw
+                    drive.setspeed(90, 10)
+                    # TODO: measure distance and throw ball
+                elif circlingBall:          # When we are spinning around the ball
+                    if len(cntsPurple) > 0:
+                        basketx, baskety = drawThing(cntsPurple)
+                        basketIsMiddle = isMiddle(basketx)
+                        if basketIsMiddle and ballIsMiddle:
+                            drive.shutdown()
+                            circlingBall = False
+                elif bally > 400:   # If we are close enough to the ball after approaching it
+                    if ballIsMiddle:
                         drive.shutdown()
+                        drive.circleBall()
+                        circlingBall = True
                     else:
-                        if pallx < 307:
+                        if ballx < 307:
                             drive.setspeed(180, 10)
                         else:
                             drive.setspeed(0, 10)
 
                 else:
-                    drive.setspeed(nurk, 20)
+                    drive.setspeed(angle, 20)
                 """
                 if pallx ==-1:
                     drive.spinleft()
@@ -172,8 +185,8 @@ while True:
                     cv2.putText(frame, "Korv on keskel!", (10, 350), cv2.FONT_HERSHEY_DUPLEX, 1,
                                 cv2.COLOR_YUV420sp2GRAY)
             """
-            if pallKeskel & korvKeskel:
-                mõlemadKeskel = True
+            if ballIsMiddle & basketIsMiddle:
+                bothMiddle = True
                 cv2.putText(frame, "Molemad on keskel! :O", (10, 370), cv2.FONT_HERSHEY_DUPLEX, 1,
                             cv2.COLOR_YUV420sp2GRAY)
             center = None

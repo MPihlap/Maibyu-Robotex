@@ -38,10 +38,10 @@ def circleBall():
     ser.write('sd-9:0:0\r\n'.encode('utf-8'))
 
 
-def setspeed(suund):
-    spd1 = int(wheelLogic(-20, wheelone, dist, suund))
-    spd2 = int(wheelLogic(-20, wheeltwo, dist, suund))
-    spd3 = int(wheelLogic(-20, wheelthree, dist, suund))
+def setspeed(suund, speed):
+    spd1 = int(wheelLogic(-speed, wheelone, dist, suund))
+    spd2 = int(wheelLogic(-speed, wheeltwo, dist, suund))
+    spd3 = int(wheelLogic(-speed, wheelthree, dist, suund))
     text = ("sd" + str(spd1) + ":" + str(spd2) + ":" + str(spd3) + "\r\n")
     ser.write('f0\r\n'.encode('utf-8'))
     ser.write(text.encode('utf-8'))
