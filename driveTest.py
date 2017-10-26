@@ -33,12 +33,8 @@ def spinleft():
     ser.write('sd9:9:9\r\n'.encode('utf-8'))
 
 
-def circleBallLeft():
-    ser.write('sd5:9:9\r\n'.encode('utf-8'))
-def circleBallRight():
-    ser.write('sd9:5:9\r\n'.encode('utf-8'))
-def circleBallWat():
-    ser.write('sd9:9:5\r\n'.encode('utf-8'))
+def circleBall():
+    ser.write('sd-9:0:0\r\n'.encode('utf-8'))
 
 
 def setspeed(suund):

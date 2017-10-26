@@ -15,8 +15,8 @@ while(True):
         setspeed(0)
     if key == ord(" "):
         shutdown()
-    if key == ord("1"):
-        circleBallLeft()
+    if key == ord("r"):
+        circleBall()
 
     if key == ord("q"):
         shutdown()
