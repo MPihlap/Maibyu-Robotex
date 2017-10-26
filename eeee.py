@@ -14,6 +14,9 @@ wheelthree = 240
 #ser = serial.Serial('COM3',baudrate=115200,timeout = 0.8,dsrdtr=True)
 #qprint(ser.isOpen())
 
+ser = serial.Serial('COM3',baudrate=115200,timeout = 0.01,dsrdtr=True)
+gameIsOn = False
+n = 'aAB'
 
 # define the lower and upper boundaries of the
 # ball in the HSV color space, then initialize the
@@ -73,104 +76,120 @@ def leiaNurk(x, y):
 
 
 while True:
-    # grab the current frame
-    (grabbed, frame) = camera.read()
-    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+    vastus = ser.read(12)
+    if vastus == 'aAXSTART----':
+        ser.write(n + 'ACK-----')
+        print("sain start kasu")
+        gameIsOn = True
+    elif vastus == n + 'PING-----':
+        print("sain ping kasu")
+        ser.write(n + 'ACK-----')
+    if gameIsOn:
+        while True:
+            vastus = ser.read(12)
+            if vastus == 'aAXSTOP------':
+                ser.write(n + 'ACK-----')
+                print("sain stop kasu")
+                gameIsOn = False
+                break
+            # grab the current frame
+            (grabbed, frame) = camera.read()
+            hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
-    # construct a mask for the color "green", then perform
-    # a series of dilations and erosions to remove any small
-    # blobs left in the mask
-    # erode + dilate asemel saab kasutada opening.
+            # construct a mask for the color "green", then perform
+            # a series of dilations and erosions to remove any small
+            # blobs left in the mask
+            # erode + dilate asemel saab kasutada opening.
 
-    mask = cv2.inRange(hsv, greenLower, greenUpper)
-    mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
-    #mask = cv2.erode(mask, None, iterations=1)
-    #mask = cv2.dilate(mask, None, iterations=1)
+            mask = cv2.inRange(hsv, greenLower, greenUpper)
+            mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
+            #mask = cv2.erode(mask, None, iterations=1)
+            #mask = cv2.dilate(mask, None, iterations=1)
 
-    maskBlue = cv2.inRange(hsv, blueLower, blueUpper)
-    maskBlue = cv2.morphologyEx(maskBlue,cv2.MORPH_CLOSE,kernel)
-    #maskBlue = cv2.erode(maskBlue, None, iterations=1)
-    #maskBlue = cv2.dilate(maskBlue, None, iterations=1)
+            maskBlue = cv2.inRange(hsv, blueLower, blueUpper)
+            maskBlue = cv2.morphologyEx(maskBlue,cv2.MORPH_CLOSE,kernel)
+            #maskBlue = cv2.erode(maskBlue, None, iterations=1)
+            #maskBlue = cv2.dilate(maskBlue, None, iterations=1)
 
-    # find contours in the mask and initialize the current
-    # (x, y) center of the ball
-    cnts = cv2.findContours(mask, cv2.RETR_EXTERNAL,
-                            cv2.CHAIN_APPROX_SIMPLE)[-2]
-    cntsPurple = cv2.findContours(maskBlue, cv2.RETR_EXTERNAL,
-                                  cv2.CHAIN_APPROX_SIMPLE)[-2]
+            # find contours in the mask and initialize the current
+            # (x, y) center of the ball
+            cnts = cv2.findContours(mask, cv2.RETR_EXTERNAL,
+                                    cv2.CHAIN_APPROX_SIMPLE)[-2]
+            cntsPurple = cv2.findContours(maskBlue, cv2.RETR_EXTERNAL,
+                                          cv2.CHAIN_APPROX_SIMPLE)[-2]
 
-    pallKeskel = False
-    korvKeskel = False
-    mõlemadKeskel = False
-    if len(cnts) > 0:
-        #print(len(cnts))
-        pallx, pally = joonistaAsi(cnts)
-        nurk = leiaNurk(pallx,pally)
-        #print(str(pallx)+" "+ str(pally)+" "+str(nurk))
-        print(pallx)
-        pallKeskel = kasKeskel(pallx)
-
-        if pally > 400:
-            if pallKeskel:
-                drive.shutdown()
-            else:
-                if pallx < 307:
-                    drive.setspeed(180, 10)
-                else:
-                    drive.setspeed(0, 10)
-
-        else:
-            drive.setspeed(nurk, 20)
-        """
-        if pallx ==-1:
-            drive.spinleft()
-        elif pallKeskel:
-            print(pallKeskel)
-            if not sõidanOtse:
-                drive.shutdown()
-                sõidanOtse = True
-                drive.setspeed(90)
-            cv2.putText(mask, "Pall on keskel!", (10, 330), cv2.FONT_HERSHEY_DUPLEX, 1,
-                        cv2.COLOR_YUV2GRAY_420)
-        else:
-            sõidanOtse = False
             pallKeskel = False
+            korvKeskel = False
+            mõlemadKeskel = False
+            if len(cnts) > 0:
+                #print(len(cnts))
+                pallx, pally = joonistaAsi(cnts)
+                nurk = leiaNurk(pallx,pally)
+                #print(str(pallx)+" "+ str(pally)+" "+str(nurk))
+                print(pallx)
+                pallKeskel = kasKeskel(pallx)
 
-            if pallx < 300:
-                drive.spinright()
+                if pally > 400:
+                    if pallKeskel:
+                        drive.shutdown()
+                    else:
+                        if pallx < 307:
+                            drive.setspeed(180, 10)
+                        else:
+                            drive.setspeed(0, 10)
 
-            elif pallx> 340:
-                drive.spinleft()
-    """
-    else:
-        pass
-        #drive.spinleft()
+                else:
+                    drive.setspeed(nurk, 20)
+                """
+                if pallx ==-1:
+                    drive.spinleft()
+                elif pallKeskel:
+                    print(pallKeskel)
+                    if not sõidanOtse:
+                        drive.shutdown()
+                        sõidanOtse = True
+                        drive.setspeed(90)
+                    cv2.putText(mask, "Pall on keskel!", (10, 330), cv2.FONT_HERSHEY_DUPLEX, 1,
+                                cv2.COLOR_YUV2GRAY_420)
+                else:
+                    sõidanOtse = False
+                    pallKeskel = False
 
-    """if len(cntsPurple) > 0:
-        korvx, korvy = joonistaAsi(cntsPurple)
-        korvKeskel = kasKeskel(korvx)
-        if korvKeskel:
-            cv2.putText(frame, "Korv on keskel!", (10, 350), cv2.FONT_HERSHEY_DUPLEX, 1,
-                        cv2.COLOR_YUV420sp2GRAY)
-    """
-    if pallKeskel & korvKeskel:
-        mõlemadKeskel = True
-        cv2.putText(frame, "Molemad on keskel! :O", (10, 370), cv2.FONT_HERSHEY_DUPLEX, 1,
-                    cv2.COLOR_YUV420sp2GRAY)
-    center = None
-    cv2.line(frame,(313,0),(313,480),(255,0,0), 1)
+                    if pallx < 300:
+                        drive.spinright()
 
-    # update the points queue
-    pts.appendleft(center)
-    # show the frame to our screen
-    cv2.imshow("Frame", frame  )
-    key = cv2.waitKey(1) & 0xFF
+                    elif pallx> 340:
+                        drive.spinleft()
+            """
+            else:
+                pass
+                #drive.spinleft()
 
-    # if the 'q' key is pressed, stop the loop
-    if key == ord("q"):
-        ##cv2.imwrite("test.png", frame)
-        drive.shutdown()
-        break
+            """if len(cntsPurple) > 0:
+                korvx, korvy = joonistaAsi(cntsPurple)
+                korvKeskel = kasKeskel(korvx)
+                if korvKeskel:
+                    cv2.putText(frame, "Korv on keskel!", (10, 350), cv2.FONT_HERSHEY_DUPLEX, 1,
+                                cv2.COLOR_YUV420sp2GRAY)
+            """
+            if pallKeskel & korvKeskel:
+                mõlemadKeskel = True
+                cv2.putText(frame, "Molemad on keskel! :O", (10, 370), cv2.FONT_HERSHEY_DUPLEX, 1,
+                            cv2.COLOR_YUV420sp2GRAY)
+            center = None
+            cv2.line(frame,(313,0),(313,480),(255,0,0), 1)
+
+            # update the points queue
+            pts.appendleft(center)
+            # show the frame to our screen
+            cv2.imshow("Frame", frame  )
+            key = cv2.waitKey(1) & 0xFF
+
+            # if the 'q' key is pressed, stop the loop
+            if key == ord("q"):
+                ##cv2.imwrite("test.png", frame)
+                drive.shutdown()
+                break
 
 # cleanup the camera and close any open windows
 camera.release()
