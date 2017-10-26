@@ -77,18 +77,18 @@ def findAngle(x, y):
 
 
 while True:
-    vastus = ser.read(12)
-    if vastus == 'aAXSTART----':
+    vastus = ser.read(19).decode("utf-8")
+    if vastus == '<ref:aAXSTART---->\n':
         ser.write(n + 'ACK-----')
         print("sain start kasu")
         gameIsOn = True
-    elif vastus == n + 'PING-----':
+    elif vastus == '<ref:PING----->\n':
         print("sain ping kasu")
         ser.write(n + 'ACK-----')
     if gameIsOn:
         while True:
             vastus = ser.read(12)
-            if vastus == 'aAXSTOP------':
+            if vastus == '<ref:aAXSTOP------\n>':
                 ser.write(n + 'ACK-----')
                 print("sain stop kasu")
                 gameIsOn = False
