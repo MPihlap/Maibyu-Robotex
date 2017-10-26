@@ -8,7 +8,7 @@ wheelone = 0
 wheeltwo = 120
 wheelthree = 240
 
-ser = serial.Serial('COM3', baudrate=115200, timeout=0.8, dsrdtr=True)
+ser = serial.Serial('COM3', baudrate=115200, timeout=0.01, dsrdtr=True)
 
 
 # print(ser.isOpen())
@@ -20,6 +20,10 @@ def wheelLogic(robotspeed, wheel, dist, suund):
     speed = robotspeed * math.cos(math.radians(suund - wheel))  # +dist*angVel
     return speed
 
+def startThrow():
+    ser.write('d:1600\r\n'.encode('utf-8'))
+def stopThrow():
+    ser.write('d:1000\r\n'.encode('utf-8'))
 
 def shutdown():
     ser.write('sd0:0:0\r\n'.encode('utf-8'))

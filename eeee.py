@@ -85,6 +85,7 @@ while True:
     elif vastus == '<ref:PING----->\n':
         print("sain ping kasu")
         ser.write(n + 'ACK-----')
+    gameIsOn = True
     if gameIsOn:
         while True:
             vastus = ser.read(12)
@@ -130,8 +131,9 @@ while True:
                 print(ballx)
                 ballIsMiddle = isMiddle(ballx)
 
-                if ballIsMiddle and basketIsMiddle: # If we have spun around the ball and are going to throw
+                if ballx and basketIsMiddle: # If we have spun around the ball and are going to throw
                     drive.setspeed(90, 10)
+                    drive.startThrow()
                     # TODO: measure distance and throw ball
                 elif circlingBall:          # When we are spinning around the ball
                     if len(cntsPurple) > 0:
@@ -202,6 +204,7 @@ while True:
             if key == ord("q"):
                 ##cv2.imwrite("test.png", frame)
                 drive.shutdown()
+                drive.stopThrow()
                 break
 
 # cleanup the camera and close any open windows
