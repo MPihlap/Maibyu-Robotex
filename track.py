@@ -5,15 +5,20 @@ import cv2
 # define the lower and upper boundaries of the
 # ball in the HSV color space, then initialize the
 # list of tracked points
-greenLower = (49, 35, 72)
-greenUpper = (80, 108, 204)
-
-blueLower = (101,107,94)
-blueUpper = (115,147,134)
+#greenLower = (49, 35, 72)
+#greenUpper = (80, 108, 204)
+#greenLower = (0, 113, 126)
+#greenUpper = (13, 196, 255)
+greenLower = (5,255,43) #test roheline vaartus
+greenUpper= (38,255,160)
+blueLower = (26,89,52)  #
+blueUpper = (179,185,114)
+#blueLower = (101,107,94)
+#blueUpper = (115,147,134)
 pts = deque()
 
 #grab the reference to the webcam
-camera = cv2.VideoCapture(1)
+camera = cv2.VideoCapture(0)
 
 while True:
     # grab the current frame
@@ -26,6 +31,9 @@ while True:
     mask = cv2.inRange(hsv, greenLower, greenUpper)
     mask = cv2.erode(mask, None, iterations=1)
     mask = cv2.dilate(mask, None, iterations=1)
+    res = cv2.bitwise_and(hsv, hsv, mask=mask)
+    cv2.imshow("res",res)
+    cv2.imshow("mask",mask)
     # find contours in the mask and initialize the current
     # (x, y) center of the ball
     cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL,
@@ -43,7 +51,7 @@ while True:
         center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
 
         # only proceed if the radius meets a minimum size
-        if radius > 10:
+        if radius > 0:
             # draw the circle and centroid on the frame,
             # then update the list of tracked points
 

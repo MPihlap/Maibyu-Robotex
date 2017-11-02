@@ -2,8 +2,9 @@ from collections import deque
 import cv2
 import serial
 import numpy as np
-import driveTest as drive
+from driveTest import DriveTest
 import math
+import threading
 
 dist = 0.115
 wheelone = 0
@@ -23,13 +24,14 @@ n = 'rf:aAB'
 # list of tracked points
 #greenLower = (49, 35, 72)
 #greenUpper = (80, 108, 204)
-greenLower = (0, 113, 126)
-greenUpper = (13, 196, 255)
-blueLower = (101, 91, 42)
-blueUpper = (122, 185, 129)
+greenLower = (5, 255, 43)
+greenUpper = (38, 255, 144)
+#5,38,255,255,43,160
+blueLower = (24, 81, 41)
+blueUpper = (110, 255, 96)
 #pallKeskel = False
 basketIsMiddle = False
-sõidanOtse = False
+soidanOtse = False
 circlingBall = False
 makeThrow = False
 
@@ -63,10 +65,8 @@ def drawThing(cnts):
     return x,y
 
 #grab the reference to the webcam
-camera = cv2.VideoCapture(1)
+camera = cv2.VideoCapture(0)
 kernel = np.ones((5,5), np.uint8)
-
-
 def isMiddle(x):
     #if x >= 307 and x < 317:
     if x >= 300 and x < 320:
@@ -74,7 +74,7 @@ def isMiddle(x):
     else:
         return False
 def findAngle(x, y):
-    return int(math.degrees(math.atan((313-x)/y))+90) # 313 mõõtmiste tulemusena leitud keskmine
+    return int(math.degrees(math.atan((313-x)/y))+90) # 313 mootmiste tulemusena leitud keskmine
 
 
 
@@ -90,6 +90,7 @@ def findAngle(x, y):
     gameIsOn = True
     if gameIsOn:
 """
+drive = DriveTest()
 while True:
     """vastus = ser.read(12)
     if vastus == '<ref:aAXSTOP------\n>':
@@ -138,6 +139,7 @@ while True:
         if makeThrow: # If we have spun around the ball and are going to throw
             drive.setspeed(90, 10)
             drive.startThrow()
+            # lisa counter, et saaks makeThrow-st valja.
 
         elif circlingBall:          # When we are spinning around the ball
             drive.circleBall()
@@ -170,14 +172,14 @@ while True:
             drive.spinleft()
         elif pallKeskel:
             print(pallKeskel)
-            if not sõidanOtse:
+            if not soidanOtse:
                 drive.shutdown()
-                sõidanOtse = True
+                soidanOtse = True
                 drive.setspeed(90)
             cv2.putText(mask, "Pall on keskel!", (10, 330), cv2.FONT_HERSHEY_DUPLEX, 1,
                         cv2.COLOR_YUV2GRAY_420)
         else:
-            sõidanOtse = False
+            soidanOtse = False
             pallKeskel = False
 
             if pallx < 300:
@@ -187,8 +189,7 @@ while True:
                 drive.spinleft()
     """
     else:
-        pass
-        #drive.spinleft()
+        drive.spinleft()
 
     """if len(cntsPurple) > 0:
         korvx, korvy = joonistaAsi(cntsPurple)
@@ -215,8 +216,9 @@ while True:
         ##cv2.imwrite("test.png", frame)
         drive.shutdown()
         drive.stopThrow()
+        drive.running = False
         break
-
+drive.running = False
 # cleanup the camera and close any open windows
 camera.release()
 cv2.destroyAllWindows()
