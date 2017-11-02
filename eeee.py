@@ -35,10 +35,11 @@ soidanOtse = False
 circlingBall = False
 makeThrow = False
 keskX = 313
+counter = 0
 
 pts = deque()
 img = np.zeros((480, 640, 3), np.uint8)
-def drawThing(cnts):
+def drawThing(cnts, isBall):
 
     # find the largest contour in the mask, then use
     # it to compute the minimum enclosing circle and
@@ -48,22 +49,32 @@ def drawThing(cnts):
     #print(pindala)
     if pindala < 70:
         return -1,-1
-    ((x, y), radius) = cv2.minEnclosingCircle(c)
-    M = cv2.moments(c)
-    if M["m00"] > 0:
-        center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
-        #print("Raadius: "+ str(radius))
-    # only proceed if the radius meets a minimum size
-        if radius > 10:
-        # draw the circle and centroid on the frame,
-        # then update the list of tracked points
+    if isBall:
+        ((x, y), radius) = cv2.minEnclosingCircle(c)
+        M = cv2.moments(c)
+        if M["m00"] > 0:
+            center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
+            #print("Raadius: "+ str(radius))
+        # only proceed if the radius meets a minimum size
+            if radius > 10:
+            # draw the circle and centroid on the frame,
+            # then update the list of tracked points
 
-            cv2.circle(frame, (int(x), int(y)), int(radius),
-                       (0, 255, 255), 2)
-            cv2.circle(frame, center, 5, (0, 0, 255), -1)
-            cv2.putText(frame, str(center), center, cv2.FONT_HERSHEY_DUPLEX, 1, cv2.COLOR_YUV420sp2GRAY)
-            cv2.putText(frame, str(round((radius**2)*3.14)), (center[0]+200,center[1]), cv2.FONT_HERSHEY_DUPLEX, 1, cv2.COLOR_YUV420sp2GRAY)
-    return x,y
+                cv2.circle(frame, (int(x), int(y)), int(radius),
+                           (0, 255, 255), 2)
+                cv2.circle(frame, center, 5, (0, 0, 255), -1)
+                cv2.putText(frame, str(center), center, cv2.FONT_HERSHEY_DUPLEX, 1, cv2.COLOR_YUV420sp2GRAY)
+                cv2.putText(frame, str(round((radius**2)*3.14)), (center[0]+200,center[1]), cv2.FONT_HERSHEY_DUPLEX, 1, cv2.COLOR_YUV420sp2GRAY)
+        return x,y
+    else:
+        x, y, w, h = cv2.boundingRect(c)
+        M = cv2.moments(c)
+        center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
+        if x > 10 and y > 10:
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 255), 2)
+            cv2.putText(frame, "Laius: " + str(round(w)), (10, 300), cv2.FONT_HERSHEY_DUPLEX, 1,
+                        cv2.COLOR_YUV420sp2GRAY)
+        return x, y, w, h
 
 #grab the reference to the webcam
 camera = cv2.VideoCapture(0)
@@ -134,22 +145,28 @@ while True:
     ballIsMiddle = False
     basketIsMiddle = False
     bothMiddle = False
+
+    if counter > 60:
+        counter = 0
+        makeThrow = False
     if len(cnts) > 0:
         #print(len(cnts))
-        ballx, bally = drawThing(cnts)
+        ballx, bally = drawThing(cnts, True)
         angle = findAngle(ballx, bally)
         #print(str(pallx)+" "+ str(pally)+" "+str(nurk))
         #print(ballx)
         ballIsMiddle = isMiddle(ballx)
 
         if makeThrow: # If we have spun around the ball and are going to throw
-            drive.setspeed(90, 10)
-            drive.startThrow()
+            counter += 1
+            if len(cntsPurple) > 0:
+                basketx, baskety, w, h = drawThing(cntsPurple, False)
+                drive.setspeed(90, 10)
+                drive.startThrow(w * 34.2)
             # lisa counter, et saaks makeThrow-st valja.
 
         elif circlingBall:          # When we are spinning around the ball
             if len(cntsPurple) > 0:
-                basketx, baskety = drawThing(cntsPurple)
                 if basketx < keskX:
                     drive.circleBallRight()
                 else:

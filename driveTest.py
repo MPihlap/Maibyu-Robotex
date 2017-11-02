@@ -73,8 +73,8 @@ class DriveTest:
         speed = robotspeed * math.cos(math.radians(suund - wheel))  # +dist*angVel
         return speed
 
-    def startThrow(self):
-        self.throwSpeed = 1600
+    def startThrow(self, speed):
+        self.throwSpeed = speed
 
 
     def setspeed(self,suund, speed):
