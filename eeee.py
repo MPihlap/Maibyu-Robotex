@@ -148,12 +148,12 @@ while True:
             # lisa counter, et saaks makeThrow-st valja.
 
         elif circlingBall:          # When we are spinning around the ball
-            if ballx > keskX:
-                drive.circleBallLeft()
-            else:
-                drive.circleBallRight()
             if len(cntsPurple) > 0:
                 basketx, baskety = drawThing(cntsPurple)
+                if basketx < keskX:
+                    drive.circleBallRight()
+                else:
+                    drive.circleBallLeft()
                 basketIsMiddle = isMiddle(basketx)
                 ballIsMiddle = isMiddle(ballx)
                 #print("pall: "+str(ballIsMiddle))
@@ -163,6 +163,8 @@ while True:
                     print("Korv ja pall keskel")
                     circlingBall = False
                     makeThrow = True
+            else:
+                drive.circleBallLeft()
         elif bally > 400:   # If we are close enough to the ball after approaching it
             if ballIsMiddle and not makeThrow:
                 #drive.shutdown()
