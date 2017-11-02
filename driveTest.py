@@ -57,6 +57,7 @@ class DriveTest:
         self.speed1 = 9
         self.speed2 = 0
         self.speed3 = 0
+
     def circleBallRight(self):
         self.speed1 = 0
         self.speed2 = 9

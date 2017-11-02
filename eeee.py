@@ -34,6 +34,7 @@ basketIsMiddle = False
 soidanOtse = False
 circlingBall = False
 makeThrow = False
+keskX = 313
 
 pts = deque()
 img = np.zeros((480, 640, 3), np.uint8)
@@ -73,8 +74,13 @@ def isMiddle(x):
         return True
     else:
         return False
+
+
+
+
+
 def findAngle(x, y):
-    return int(math.degrees(math.atan((313-x)/y))+90) # 313 mootmiste tulemusena leitud keskmine
+    return int(math.degrees(math.atan((keskX - x) / y)) + 90) # 313 mootmiste tulemusena leitud keskmine
 
 
 
@@ -142,7 +148,10 @@ while True:
             # lisa counter, et saaks makeThrow-st valja.
 
         elif circlingBall:          # When we are spinning around the ball
-            drive.circleBallLeft()
+            if ballx > keskX:
+                drive.circleBallLeft()
+            else:
+                drive.circleBallRight()
             if len(cntsPurple) > 0:
                 basketx, baskety = drawThing(cntsPurple)
                 basketIsMiddle = isMiddle(basketx)
@@ -203,7 +212,7 @@ while True:
         cv2.putText(frame, "Molemad on keskel! :O", (10, 370), cv2.FONT_HERSHEY_DUPLEX, 1,
                     cv2.COLOR_YUV420sp2GRAY)
     center = None
-    cv2.line(frame,(313,0),(313,480),(255,0,0), 1)
+    cv2.line(frame, (keskX, 0), (keskX, 480), (255, 0, 0), 1)
 
     # update the points queue
     pts.appendleft(center)
