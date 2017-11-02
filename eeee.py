@@ -142,7 +142,7 @@ while True:
             # lisa counter, et saaks makeThrow-st valja.
 
         elif circlingBall:          # When we are spinning around the ball
-            drive.circleBall()
+            drive.circleBallLeft()
             if len(cntsPurple) > 0:
                 basketx, baskety = drawThing(cntsPurple)
                 basketIsMiddle = isMiddle(basketx)
@@ -157,7 +157,7 @@ while True:
         elif bally > 400:   # If we are close enough to the ball after approaching it
             if ballIsMiddle and not makeThrow:
                 #drive.shutdown()
-                drive.circleBall()
+                drive.circleBallLeft()
                 circlingBall = True
             else:
                 if ballx < 307:
