@@ -48,7 +48,10 @@ def drawThing(cnts, isBall):
     pindala = cv2.contourArea(c)
     #print(pindala)
     if pindala < 70:
-        return -1,-1
+        if isBall:
+            return -1,-1
+        else:
+            return -1, -1, -1, -1
     if isBall:
         ((x, y), radius) = cv2.minEnclosingCircle(c)
         M = cv2.moments(c)
@@ -70,12 +73,12 @@ def drawThing(cnts, isBall):
         x, y, w, h = cv2.boundingRect(c)
         M = cv2.moments(c)
         center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
-        if x > 10 and y > 10:
+        if w > 5:
             cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 255), 2)
             cv2.putText(frame, "Laius: " + str(round(w)), (10, 300), cv2.FONT_HERSHEY_DUPLEX, 1,
                         cv2.COLOR_YUV420sp2GRAY)
-        return x, y, w, h
-
+            return x, y, w, h
+        #return 0, 0, 0, 0
 #grab the reference to the webcam
 camera = cv2.VideoCapture(0)
 kernel = np.ones((5,5), np.uint8)
@@ -149,6 +152,9 @@ while True:
     if counter > 60:
         counter = 0
         makeThrow = False
+        drive.throwSpeed = 1000
+    if len(cntsPurple) > 0:
+        basketx, baskety, w, h = drawThing(cntsPurple, False)
     if len(cnts) > 0:
         #print(len(cnts))
         ballx, bally = drawThing(cnts, True)
@@ -162,15 +168,11 @@ while True:
             if len(cntsPurple) > 0:
                 basketx, baskety, w, h = drawThing(cntsPurple, False)
                 drive.setspeed(90, 10)
-                drive.startThrow(w * 34.2)
+                drive.startThrow(int(1600 - (w -35)*(-4)))
             # lisa counter, et saaks makeThrow-st valja.
 
         elif circlingBall:          # When we are spinning around the ball
             if len(cntsPurple) > 0:
-                if basketx < keskX:
-                    drive.circleBallRight()
-                else:
-                    drive.circleBallLeft()
                 basketIsMiddle = isMiddle(basketx)
                 ballIsMiddle = isMiddle(ballx)
                 #print("pall: "+str(ballIsMiddle))
@@ -184,8 +186,12 @@ while True:
                 drive.circleBallLeft()
         elif bally > 400:   # If we are close enough to the ball after approaching it
             if ballIsMiddle and not makeThrow:
+                if basketx < keskX:
+                    drive.circleBallRight()
+                else:
+                    drive.circleBallLeft()
                 #drive.shutdown()
-                drive.circleBallLeft()
+                #drive.circleBallLeft()
                 circlingBall = True
             else:
                 if ballx < 307:
