@@ -36,6 +36,7 @@ circlingBall = False
 makeThrow = False
 keskX = 313
 counter = 0
+mängKäib = True
 
 pts = deque()
 img = np.zeros((480, 640, 3), np.uint8)
@@ -145,91 +146,92 @@ while True:
     ballIsMiddle = False
     basketIsMiddle = False
     bothMiddle = False
+    if mängKäib:
+        if counter > 60:
+            counter = 0
+            makeThrow = False
+            mängKäib = False
+            drive.shutdown()
+        if len(cnts) > 0:
+            #print(len(cnts))
+            ballx, bally = drawThing(cnts, True)
+            angle = findAngle(ballx, bally)
+            #print(str(pallx)+" "+ str(pally)+" "+str(nurk))
+            #print(ballx)
+            ballIsMiddle = isMiddle(ballx)
 
-    if counter > 60:
-        counter = 0
-        makeThrow = False
-    if len(cnts) > 0:
-        #print(len(cnts))
-        ballx, bally = drawThing(cnts, True)
-        angle = findAngle(ballx, bally)
-        #print(str(pallx)+" "+ str(pally)+" "+str(nurk))
-        #print(ballx)
-        ballIsMiddle = isMiddle(ballx)
+            if makeThrow: # If we have spun around the ball and are going to throw
+                counter += 1
+                if len(cntsPurple) > 0:
+                    basketx, baskety, w, h = drawThing(cntsPurple, False)
+                    drive.setspeed(90, 10)
+                    drive.startThrow(1600 - (w-35)*(-4))
 
-        if makeThrow: # If we have spun around the ball and are going to throw
-            counter += 1
-            if len(cntsPurple) > 0:
-                basketx, baskety, w, h = drawThing(cntsPurple, False)
-                drive.setspeed(90, 10)
-                drive.startThrow(w * 34.2)
-            # lisa counter, et saaks makeThrow-st valja.
-
-        elif circlingBall:          # When we are spinning around the ball
-            if len(cntsPurple) > 0:
-                if basketx < keskX:
-                    drive.circleBallRight()
+            elif circlingBall:          # When we are spinning around the ball
+                if len(cntsPurple) > 0:
+                    if basketx < keskX:
+                        drive.circleBallRight()
+                    else:
+                        drive.circleBallLeft()
+                    basketIsMiddle = isMiddle(basketx)
+                    ballIsMiddle = isMiddle(ballx)
+                    #print("pall: "+str(ballIsMiddle))
+                    print("korv: "+str(basketIsMiddle))
+                    if basketIsMiddle:
+                        drive.shutdown()
+                        print("Korv ja pall keskel")
+                        circlingBall = False
+                        makeThrow = True
                 else:
                     drive.circleBallLeft()
-                basketIsMiddle = isMiddle(basketx)
-                ballIsMiddle = isMiddle(ballx)
-                #print("pall: "+str(ballIsMiddle))
-                print("korv: "+str(basketIsMiddle))
-                if basketIsMiddle:
-                    drive.shutdown()
-                    print("Korv ja pall keskel")
-                    circlingBall = False
-                    makeThrow = True
-            else:
-                drive.circleBallLeft()
-        elif bally > 400:   # If we are close enough to the ball after approaching it
-            if ballIsMiddle and not makeThrow:
-                #drive.shutdown()
-                drive.circleBallLeft()
-                circlingBall = True
-            else:
-                if ballx < 307:
-                    drive.setspeed(180, 10)
+            elif bally > 400:   # If we are close enough to the ball after approaching it
+                if ballIsMiddle and not makeThrow:
+                    #drive.shutdown()
+                    drive.circleBallLeft()
+                    circlingBall = True
                 else:
-                    drive.setspeed(0, 10)
+                    if ballx < 307:
+                        drive.setspeed(180, 10)
+                    else:
+                        drive.setspeed(0, 10)
 
-        else:
-            drive.setspeed(angle, 20)
-        """
-        if pallx ==-1:
-            drive.spinleft()
-        elif pallKeskel:
-            print(pallKeskel)
-            if not soidanOtse:
-                drive.shutdown()
-                soidanOtse = True
-                drive.setspeed(90)
-            cv2.putText(mask, "Pall on keskel!", (10, 330), cv2.FONT_HERSHEY_DUPLEX, 1,
-                        cv2.COLOR_YUV2GRAY_420)
-        else:
-            soidanOtse = False
-            pallKeskel = False
-
-            if pallx < 300:
-                drive.spinright()
-
-            elif pallx> 340:
+            else:
+                drive.setspeed(angle, 20)
+            """
+            if pallx ==-1:
                 drive.spinleft()
-    """
-    else:
-        drive.spinleft()
+            elif pallKeskel:
+                print(pallKeskel)
+                if not soidanOtse:
+                    drive.shutdown()
+                    soidanOtse = True
+                    drive.setspeed(90)
+                cv2.putText(mask, "Pall on keskel!", (10, 330), cv2.FONT_HERSHEY_DUPLEX, 1,
+                            cv2.COLOR_YUV2GRAY_420)
+            else:
+                soidanOtse = False
+                pallKeskel = False
 
-    """if len(cntsPurple) > 0:
-        korvx, korvy = joonistaAsi(cntsPurple)
-        korvKeskel = kasKeskel(korvx)
-        if korvKeskel:
-            cv2.putText(frame, "Korv on keskel!", (10, 350), cv2.FONT_HERSHEY_DUPLEX, 1,
+                if pallx < 300:
+                    drive.spinright()
+
+                elif pallx> 340:
+                    drive.spinleft()
+        """
+        else:
+            drive.spinleft()
+
+        """if len(cntsPurple) > 0:
+            korvx, korvy = joonistaAsi(cntsPurple)
+            korvKeskel = kasKeskel(korvx)
+            if korvKeskel:
+                cv2.putText(frame, "Korv on keskel!", (10, 350), cv2.FONT_HERSHEY_DUPLEX, 1,
+                            cv2.COLOR_YUV420sp2GRAY)
+        """
+        if ballIsMiddle & basketIsMiddle:
+            bothMiddle = True
+            cv2.putText(frame, "Molemad on keskel! :O", (10, 370), cv2.FONT_HERSHEY_DUPLEX, 1,
                         cv2.COLOR_YUV420sp2GRAY)
-    """
-    if ballIsMiddle & basketIsMiddle:
-        bothMiddle = True
-        cv2.putText(frame, "Molemad on keskel! :O", (10, 370), cv2.FONT_HERSHEY_DUPLEX, 1,
-                    cv2.COLOR_YUV420sp2GRAY)
     center = None
     cv2.line(frame, (keskX, 0), (keskX, 480), (255, 0, 0), 1)
 
@@ -246,6 +248,9 @@ while True:
         drive.stopThrow()
         drive.running = False
         break
+    elif key == ord("p"):
+        mängKäib = not mängKäib
+        drive.shutdown()
 drive.running = False
 # cleanup the camera and close any open windows
 camera.release()
