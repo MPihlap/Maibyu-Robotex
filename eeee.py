@@ -49,7 +49,10 @@ def drawThing(cnts, isBall):
     pindala = cv2.contourArea(c)
     #print(pindala)
     if pindala < 70:
-        return -1,-1
+        if isBall:
+            return -1,-1
+        else:
+            return -1, -1, -1, -1
     if isBall:
         ((x, y), radius) = cv2.minEnclosingCircle(c)
         M = cv2.moments(c)
@@ -71,12 +74,12 @@ def drawThing(cnts, isBall):
         x, y, w, h = cv2.boundingRect(c)
         M = cv2.moments(c)
         center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
-        if x > 10 and y > 10:
+        if w > 5:
             cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 255), 2)
             cv2.putText(frame, "Laius: " + str(round(w)), (10, 300), cv2.FONT_HERSHEY_DUPLEX, 1,
                         cv2.COLOR_YUV420sp2GRAY)
-        return x, y, w, h
-
+            return x, y, w, h
+        #return 0, 0, 0, 0
 #grab the reference to the webcam
 camera = cv2.VideoCapture(0)
 kernel = np.ones((5,5), np.uint8)
@@ -197,37 +200,9 @@ while True:
 
             else:
                 drive.setspeed(angle, 20)
-            """
-            if pallx ==-1:
-                drive.spinleft()
-            elif pallKeskel:
-                print(pallKeskel)
-                if not soidanOtse:
-                    drive.shutdown()
-                    soidanOtse = True
-                    drive.setspeed(90)
-                cv2.putText(mask, "Pall on keskel!", (10, 330), cv2.FONT_HERSHEY_DUPLEX, 1,
-                            cv2.COLOR_YUV2GRAY_420)
-            else:
-                soidanOtse = False
-                pallKeskel = False
-
-                if pallx < 300:
-                    drive.spinright()
-
-                elif pallx> 340:
-                    drive.spinleft()
-        """
         else:
             drive.spinleft()
 
-        """if len(cntsPurple) > 0:
-            korvx, korvy = joonistaAsi(cntsPurple)
-            korvKeskel = kasKeskel(korvx)
-            if korvKeskel:
-                cv2.putText(frame, "Korv on keskel!", (10, 350), cv2.FONT_HERSHEY_DUPLEX, 1,
-                            cv2.COLOR_YUV420sp2GRAY)
-        """
         if ballIsMiddle & basketIsMiddle:
             bothMiddle = True
             cv2.putText(frame, "Molemad on keskel! :O", (10, 370), cv2.FONT_HERSHEY_DUPLEX, 1,

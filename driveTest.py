@@ -8,7 +8,7 @@ class DriveTest:
     def commandThread(self):
         while self.running:
             time.sleep(0.1)
-            print(self.speed1)
+            #print(self.speed1)
             text = ("sd:" + str(self.speed1) + ":" + str(self.speed2) + ":" + str(self.speed3) + "\r\n")
             self.ser.write('f0\r\n'.encode('utf-8'))
             time.sleep(0.01)
@@ -59,8 +59,8 @@ class DriveTest:
         self.speed3 = 0
 
     def circleBallRight(self):
-        self.speed1 = 0
-        self.speed2 = 9
+        self.speed1 = -9
+        self.speed2 = 0
         self.speed3 = 0
 
 
