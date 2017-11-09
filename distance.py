@@ -1,11 +1,8 @@
 # import the necessary packages
 import numpy as np
 import cv2
-from driveTest import *
-#blueLower = (24, 81, 41)
-#blueUpper = (110, 255, 96)
-blueLower = (30, 90, 52)
-blueUpper = (47, 139, 76)
+blueLower = (24, 81, 41)
+blueUpper = (110, 255, 96)
 
 camera = cv2.VideoCapture(0)
 def find_marker(image):
@@ -22,19 +19,9 @@ def find_marker(image):
     # compute the bounding box of the of the paper region and return it
     return cv2.minAreaRect(c)
 knownWidth = 16
-focallength = (48*192)/knownWidth
+focallength = (64*128)/knownWidth
 kernel = np.ones((2,2), np.uint8)
-drive = DriveTest()
-alusta = False
-f = open("andmed.txt","w")
-i = 0
-f.write("i,kaugus,laius\n")
 while True:
-
-    if alusta:
-        drive.setspeed(90, 10)
-        i += 1
-
     (grabbed, frame) = camera.read()
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     mask = cv2.inRange(hsv, blueLower, blueUpper)
@@ -78,19 +65,13 @@ while True:
                         cv2.COLOR_YUV420sp2GRAY)
             cv2.putText(frame, "Kaugus: " + str(kaugus), (10, 350), cv2.FONT_HERSHEY_DUPLEX, 1,
                         cv2.COLOR_YUV420sp2GRAY)
-            if i%10 == 0:
-                f.write(str(i)+","+str(kaugus)+","+str(w)+"\n")
     #cv2.imshow("gray",gray)
-    cv2.line(frame, (313, 0), (313, 480), (255, 0, 0), 1)
+    cv2.line(frame, (0, 400), (640, 400), (255, 0, 0), 1)
     cv2.imshow("frame",frame)
     #cv2.imshow("mask",mask)
     #print()
     key = cv2.waitKey(1) & 0xFF
     # if the 'q' key is pressed, stop the loop
     if key == ord("q"):
-        drive.shutdown()
-        f.close()
         break
-    if key == ord("p"):
-        alusta = not alusta
 

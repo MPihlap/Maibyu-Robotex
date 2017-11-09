@@ -16,27 +16,42 @@ wheelthree = 240
 #qprint(ser.isOpen())
 
 #ser = serial.Serial('COM3',baudrate=115200,timeout = 0.01,dsrdtr=True)
+
 gameIsOn = False
 n = 'rf:aAB'
+
+knownWidth = 16
+focallength = (64*128)/knownWidth
 
 # define the lower and upper boundaries of the
 # ball in the HSV color space, then initialize the
 # list of tracked points
 #greenLower = (49, 35, 72)
 #greenUpper = (80, 108, 204)
-greenLower = (5, 255, 43)
-greenUpper = (38, 255, 144)
+#viimased
+#greenLower = (5, 255, 43)
+#greenUpper = (38, 255, 144)
+greenLower = (27,255,62)
+greenUpper = (40,255,173)
 #5,38,255,255,43,160
-blueLower = (24, 81, 41)
-blueUpper = (110, 255, 96)
+#VANAD
+blueLower = (26, 79, 53)
+blueUpper = (149, 167, 80)
+#blueLower = (30, 90, 52)
+#blueUpper = (47, 139, 76)
+
 #pallKeskel = False
 basketIsMiddle = False
 soidanOtse = False
 circlingBall = False
 makeThrow = False
-keskX = 313
+keskX = 306
 counter = 0
-mängKäib = True
+gameOn = False
+basketIsLeft = -1
+
+#blueLower = (24, 71, 33)
+#blueUpper = 44, 134, 49
 
 pts = deque()
 img = np.zeros((480, 640, 3), np.uint8)
@@ -48,7 +63,7 @@ def drawThing(cnts, isBall):
     c = max(cnts, key=cv2.contourArea)
     pindala = cv2.contourArea(c)
     #print(pindala)
-    if pindala < 70:
+    if pindala < 15:
         if isBall:
             return -1,-1
         else:
@@ -74,18 +89,25 @@ def drawThing(cnts, isBall):
         x, y, w, h = cv2.boundingRect(c)
         M = cv2.moments(c)
         center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
-        if w > 5:
-            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 255), 2)
-            cv2.putText(frame, "Laius: " + str(round(w)), (10, 300), cv2.FONT_HERSHEY_DUPLEX, 1,
-                        cv2.COLOR_YUV420sp2GRAY)
-            return x, y, w, h
+        #if w > 5:
+        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 255), 2)
+        cv2.putText(frame, "Laius: " + str(round(w)), (10, 300), cv2.FONT_HERSHEY_DUPLEX, 1,
+                    cv2.COLOR_YUV420sp2GRAY)
+        return x, y, w, h
         #return 0, 0, 0, 0
 #grab the reference to the webcam
 camera = cv2.VideoCapture(0)
 kernel = np.ones((5,5), np.uint8)
+def ballMiddle(x):
+    if x >= 297 and x < 315:
+        return True
+    else:
+        return False
+
 def isMiddle(x):
-    #if x >= 307 and x < 317:
-    if x >= 300 and x < 320:
+    #if x >= 310 and x < 316:
+    if x >= 297 and x < 315:
+    #if x >= 300 and x < 320:
         return True
     else:
         return False
@@ -97,29 +119,44 @@ def isMiddle(x):
 def findAngle(x, y):
     return int(math.degrees(math.atan((keskX - x) / y)) + 90) # 313 mootmiste tulemusena leitud keskmine
 
+def throwStrength(distance):
+    if distance <= 110:
+        distance_ = distance - 70 + 1232
+        print "Kaugus + tugevus: "+ str(distance) + " "+ str(distance_)
+        return distance_
+    elif distance >= 111:
+        distance___ = 1090 + distance * 1.6
+        print "Kaugus + tugevus: "+ str(distance) + " "+ str(distance___)
+        return distance___
 
+drive = DriveTest()
+#rfser = drive.ser
+print ("Press 'p' to start: ")
 
 """while True:
-    vastus = ser.read(19).decode("utf-8")
-    if vastus == '<ref:aAXSTART---->\n':
-        ser.write(n + 'ACK-----')
+    vastus = str(rfser.read(19))
+    if vastus == '<ref:aAXSTART---->\n' or vastus == '<ref:aABSTART---->\n':
+        rfser.write(n + 'ACK-----')
         print("sain start kasu")
-        gameIsOn = True
-    elif vastus == '<ref:PING----->\n':
-        print("sain ping kasu")
-        ser.write(n + 'ACK-----')
-    gameIsOn = True
-    if gameIsOn:
-"""
-drive = DriveTest()
-while True:
-    """vastus = ser.read(12)
-    if vastus == '<ref:aAXSTOP------\n>':
-        ser.write(n + 'ACK-----')
+        gameOn = True
+
+    elif vastus == '<ref:aAXSTOP----->\n':
+        rfser.write(n + 'ACK-----')
         print("sain stop kasu")
-        gameIsOn = False
-        break
-        """
+    elif vastus == '<ref:aABPING----->\n':
+        print("sain ping kasu")
+        rfser.write(n + 'ACK-----')
+
+    if gameOn:
+        while True:
+            vastus = rfser.read(19)
+            if vastus == '<ref:aAXSTOP----->\n':
+                rfser.write(n + 'ACK-----')
+                print("sain stop kasu")
+                gameIsOn = False
+                break
+"""
+while True:
     # grab the current frame
     (grabbed, frame) = camera.read()
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
@@ -131,6 +168,7 @@ while True:
 
     mask = cv2.inRange(hsv, greenLower, greenUpper)
     mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
+    cv2.imshow("mask",mask)
     #mask = cv2.erode(mask, None, iterations=1)
     #mask = cv2.dilate(mask, None, iterations=1)
 
@@ -149,42 +187,57 @@ while True:
     ballIsMiddle = False
     basketIsMiddle = False
     bothMiddle = False
-    if mängKäib:
-        if counter > 60:
-            counter = 0
-            makeThrow = False
-            mängKäib = False
-            drive.shutdown()
-        if len(cnts) > 0:
-            #print(len(cnts))
+    #print("COunter"+str(counter))
+    if counter > 60:
+        counter = 0
+        makeThrow = False
+        drive.stopThrow()
+        #gameOn = False
+        #drive.shutdown()
+    if len(cntsPurple) > 0:
+        basketx, baskety, w, h = drawThing(cntsPurple, False)
+        distance = knownWidth * focallength / w
+        cv2.putText(frame, "Kaugus: " + str(distance), (10, 200), cv2.FONT_HERSHEY_DUPLEX, 1,
+                    cv2.COLOR_YUV420sp2GRAY)
+
+    if gameOn:
+        if makeThrow:  # If we have spun around the ball and are going to throw
+            counter += 1
+            if len(cntsPurple) > 0:
+                # basketx, baskety, w, h = drawThing(cntsPurple, False)
+                drive.setspeed(90, 10)
+                if counter == 1:
+                    drive.startThrow(throwStrength(distance))
+        elif len(cnts) > 0 and cv2.contourArea(max(cnts, key= cv2.contourArea)) > 70:
+            print(len(cnts))
             ballx, bally = drawThing(cnts, True)
             angle = findAngle(ballx, bally)
             #print(str(pallx)+" "+ str(pally)+" "+str(nurk))
             #print(ballx)
-            ballIsMiddle = isMiddle(ballx)
+            ballIsMiddle = ballMiddle(ballx)
 
-            if makeThrow: # If we have spun around the ball and are going to throw
-                counter += 1
-                if len(cntsPurple) > 0:
-                    basketx, baskety, w, h = drawThing(cntsPurple, False)
-                    drive.setspeed(90, 10)
-                    drive.startThrow(1600 - (w-35)*(-4))
 
-            elif circlingBall:          # When we are spinning around the ball
+
+            if circlingBall:          # When we are spinning around the ball
                 if len(cntsPurple) > 0:
-                    if basketx < keskX:
+                    if basketx + int(w/2) < keskX:
                         drive.circleBallRight()
                     else:
                         drive.circleBallLeft()
-                    basketIsMiddle = isMiddle(basketx)
-                    ballIsMiddle = isMiddle(ballx)
+                    basketIsMiddle = isMiddle(basketx + int(w/2))
+                    #print (basketx + int(w/2))
+                    ballIsMiddle = ballMiddle(ballx)
                     #print("pall: "+str(ballIsMiddle))
-                    print("korv: "+str(basketIsMiddle))
+                    #print("korv: "+str(basketIsMiddle))
                     if basketIsMiddle:
                         drive.shutdown()
-                        print("Korv ja pall keskel")
+                        #print("Korv ja pall keskel")
                         circlingBall = False
                         makeThrow = True
+                        #gameOn = False
+                        drive.stopThrow()
+
+
                 else:
                     drive.circleBallLeft()
             elif bally > 400:   # If we are close enough to the ball after approaching it
@@ -200,7 +253,7 @@ while True:
 
             else:
                 drive.setspeed(angle, 20)
-        else:
+        elif counter == 0:
             drive.spinleft()
 
         if ballIsMiddle & basketIsMiddle:
@@ -223,9 +276,11 @@ while True:
         drive.stopThrow()
         drive.running = False
         break
+    #if the 'p' key is pressed, pause/unpause robot game logic
     elif key == ord("p"):
-        mängKäib = not mängKäib
+        gameOn = not gameOn
         drive.shutdown()
+        drive.stopThrow()
 drive.running = False
 # cleanup the camera and close any open windows
 camera.release()
