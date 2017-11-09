@@ -1,23 +1,24 @@
-from driveTest import *
+import cv2
+import serial
+import numpy as np
 frame = np.zeros((200,200))
+ser = serial.Serial('/dev/ttyACM0', baudrate=115200, timeout=0.01, dsrdtr=True)
 while(True):
     cv2.imshow("Frame", frame)
     key = cv2.waitKey(1) & 0xFF
+    print(key)
     #print(key)
     # if the 'q' key is pressed, stop the loop
     if key == ord("w"):
-        setspeed(90)
+        ser.write("d:1000\r\n".encode("utf-8"))
     if key == ord("a"):
-        setspeed(180)
+        ser.write("f::0\r\n".encode("utf-8"))
+        ser.write("d:1600\r\n".encode("utf-8"))
     if key == ord("s"):
-        setspeed(270)
-    if key == ord("d"):
-        setspeed(0)
-    if key == ord(" "):
-        shutdown()
-    if key == ord("r"):
-        circleBall()
+        ser.write("d:2000\r\n".encode("utf-8"))
+
     if key == ord("q"):
-        shutdown()
+        ser.write("f::1\r\n".encode("utf-8"))
+        ser.write("d:0\r\n".encode("utf-8"))
         ##cv2.imwrite("test.png", frame)
         break

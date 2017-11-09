@@ -7,7 +7,7 @@ import time
 class DriveTest:
     def commandThread(self):
         while self.running:
-            time.sleep(0.1)
+            time.sleep(0.05)
             #print(self.speed1)
             text = ("sd:" + str(self.speed1) + ":" + str(self.speed2) + ":" + str(self.speed3) + "\r\n")
             self.ser.write('f0\r\n'.encode('utf-8'))
