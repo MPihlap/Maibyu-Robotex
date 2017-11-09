@@ -20,4 +20,3 @@ while True:
     elif vastus == n + 'PING-----':
         print("sain ping kasu")
         ser.write(n + 'ACK-----')
-
