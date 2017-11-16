@@ -32,12 +32,12 @@ focallength = (64*128)/knownWidth
 #viimased
 #greenLower = (5, 255, 43)
 #greenUpper = (38, 255, 144)
-greenLower = (27,255,62)
-greenUpper = (40,255,173)
+greenLower = (21,75,144)
+greenUpper = (34,150,243)
 #5,38,255,255,43,160
 #VANAD
-blueLower = (26, 79, 53)
-blueUpper = (149, 167, 80)
+blueLower = (0, 11, 100)
+blueUpper = (179, 71, 181)
 #blueLower = (30, 90, 52)
 #blueUpper = (47, 139, 76)
 
@@ -46,7 +46,7 @@ basketIsMiddle = False
 soidanOtse = False
 circlingBall = False
 makeThrow = False
-keskX = 306
+keskX = 320
 counter = 0
 gameOn = False
 basketIsLeft = -1
@@ -87,27 +87,43 @@ def drawThing(cnts, isBall):
                 cv2.putText(frame, str(round((radius**2)*3.14)), (center[0]+200,center[1]), cv2.FONT_HERSHEY_DUPLEX, 1, cv2.COLOR_YUV420sp2GRAY)
         return x,y
     else:
-        x, y, w, h = cv2.boundingRect(c)
+        #x, y, w, h = cv2.minAreaRect(c)
+        rect = cv2.minAreaRect(c)
+        box = cv2.boxPoints(rect)
+        box = np.int0(box)
         M = cv2.moments(c)
         center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
         #if w > 5:
-        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 255), 2)
+        rotation = rect[2]
+        if rotation < -10:
+            h = rect[1][0]
+            w = rect[1][1]
+        else:
+            h = rect[1][1]
+            w = rect[1][0]
+        x = rect[0][0]
+        y = rect[0][1]
+
+
+        #qprint (x,y,w,h)
+        #cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 255), 2)
+        cv2.drawContours(frame, [box], 0, (0, 0, 255), 2)
         cv2.putText(frame, "Laius: " + str(round(w)), (10, 300), cv2.FONT_HERSHEY_DUPLEX, 1,
                     cv2.COLOR_YUV420sp2GRAY)
         return x, y, w, h
         #return 0, 0, 0, 0
 #grab the reference to the webcam
 camera = cv2.VideoCapture(0)
-kernel = np.ones((5,5), np.uint8)
+kernel = np.ones((2,2), np.uint8)
 def ballMiddle(x):
-    if x >= 297 and x < 315:
+    if x >= 310 and x < 330:
         return True
     else:
         return False
 
 def isMiddle(x):
     #if x >= 310 and x < 316:
-    if x >= 297 and x < 315:
+    if x >= 310 and x < 330:
     #if x >= 300 and x < 320:
         return True
     else:
@@ -168,13 +184,15 @@ while True:
     # erode + dilate asemel saab kasutada opening.
 
     mask = cv2.inRange(hsv, greenLower, greenUpper)
-    mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
-    cv2.imshow("mask",mask)
+    mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
+
     #mask = cv2.erode(mask, None, iterations=1)
     #mask = cv2.dilate(mask, None, iterations=1)
 
     maskBlue = cv2.inRange(hsv, blueLower, blueUpper)
-    maskBlue = cv2.morphologyEx(maskBlue,cv2.MORPH_CLOSE,kernel)
+    maskBlue = cv2.morphologyEx(maskBlue,cv2.MORPH_OPEN,kernel)
+    maskCombo = cv2.add(mask,maskBlue)
+    cv2.imshow("combo",maskCombo)
     #maskBlue = cv2.erode(maskBlue, None, iterations=1)
     #maskBlue = cv2.dilate(maskBlue, None, iterations=1)
 
@@ -197,7 +215,8 @@ while True:
         #drive.shutdown()
     if len(cntsPurple) > 0:
         basketx, baskety, w, h = drawThing(cntsPurple, False)
-        distance = knownWidth * focallength / w
+        # lisatav number on korvi laius(vaja kontrollida, kas on ikka 8)
+        distance = 8 + (knownWidth * focallength / w)
         cv2.putText(frame, "Kaugus: " + str(distance), (10, 200), cv2.FONT_HERSHEY_DUPLEX, 1,
                     cv2.COLOR_YUV420sp2GRAY)
 

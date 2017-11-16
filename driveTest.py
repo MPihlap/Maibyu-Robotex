@@ -28,7 +28,7 @@ class DriveTest:
         self.wheelone = 0
         self.wheeltwo = 120
         self.wheelthree = 240
-        self.ser = serial.Serial('/dev/ttyACM0', baudrate=115200, timeout=0.01, dsrdtr=True)
+        self.ser = serial.Serial('COM3', baudrate=115200, timeout=0.01, dsrdtr=True)
         self.w.start()
 
     def stopThrow(self):
