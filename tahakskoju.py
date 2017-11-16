@@ -69,7 +69,7 @@ varnames = ["h1","h2","s1","s2","v1","v2"]
 #print(upper)
 #lower = np.array(lower)
 #upper = np.array(upper)
-lower,upper = readin("VaravKollane.txt")
+#lower,upper = readin("VaravKollane.txt")
 
 while True:
     #take frame
@@ -140,6 +140,6 @@ while True:
     if k == 27:
         L = [h1, h2, s1, s2, v1, v2] # salvestan praegused h1-v2 muutujad, et need kirjutada faili
         print('olen siin')
-        rememberpos(L, "VaravsININE.txt")
+        rememberpos(L, "VaravLilla.txt")
         break
 cv2.destroyAllWindows()
