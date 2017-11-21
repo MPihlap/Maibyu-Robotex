@@ -46,8 +46,7 @@ def readin(filename):
     return np.array(alam), np.array(korgem)
 
 
-
-
+cap.set(18,False)
 
 cv2.namedWindow('image')
 cv2.createTrackbar('h1','image',0,179,nothing)         #loob trackbarid pildist varvide eraldamiseks
@@ -76,8 +75,9 @@ while True:
     ret, frame = cap.read()
     #BGR to HSV
     cv2.imshow("pilt", frame)
+    #hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-    #cv2.imshow('hsv', hsv)
+    #cv2.imshow('hsv2', hsv2)
 
     h1 = cv2.getTrackbarPos('h1', 'image')
     h2 = cv2.getTrackbarPos('h2', 'image')

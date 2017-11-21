@@ -1,10 +1,12 @@
 import serial
 
-ser = serial.Serial('/dev/ttyACM0',baudrate=9600,timeout=0.1)
+ser = serial.Serial('COM3',baudrate=115200,timeout=0.1)
 liikumine = False
-n = 'rf:aAB'
+n = 'rf:aAA'
+ser.flush()
 while True:
     vastus = ser.read(19)
+    #vastus = ser.readline()
     #if len(vastus) > 0:
      #   print(vastus)
     vastus2= str(vastus)
@@ -12,14 +14,16 @@ while True:
     #print("a")
     if len(vastus2) > 0:
         print(vastus2)
-    if vastus2 == '<ref:aKLSTART---->\n':
-        ser.write(n + 'ACK-----')
+    if vastus2 == '<ref:aAASTART---->\n':
+        ser.write('rf:aAAACK-----\n')
         print("sain start kasu")
         liikumine = True
-    elif vastus2 == '<ref:aAXSTOP----->\n':
-        ser.write(n + 'ACK-----')
+        #ser.flush()
+    elif vastus2 == '<ref:aAASTOP----->\n':
+        ser.write('rf:aAAACK-----\n')
         print("sain stop kasu")
-        liikumine = False
-    elif vastus2 == '<ref:aKLPING----->':
+        liikumine = \
+            False
+    elif vastus2 == '<ref:aAAPING----->\n':
         print("sain ping kasu")
-        ser.write(n + 'ACK-----')
+        ser.write(n+'ACK-----\n')

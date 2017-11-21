@@ -7,13 +7,18 @@ import time
 class DriveTest:
     def commandThread(self):
         while self.running:
-            time.sleep(0.05)
+            #time.sleep(0.05)
             #print(self.speed1)
+            vastus = self.ser.read(19)
+            if len(vastus) > 0:
+                print(vastus)
+                self.gameOn = self.parseRefCommand(vastus,self.field,self.robotChar)
+                print(self.gameOn)
             text = ("sd:" + str(self.speed1) + ":" + str(self.speed2) + ":" + str(self.speed3) + "\r\n")
             self.ser.write('f0\r\n'.encode('utf-8'))
-            time.sleep(0.01)
+            time.sleep(0.005)
             self.ser.write(text.encode('utf-8'))
-            time.sleep(0.01)
+            time.sleep(0.005)
             self.ser.write(('d:'+ str(self.throwSpeed)+ '\r\n').encode('utf-8'))
 
 
@@ -24,11 +29,17 @@ class DriveTest:
         self.speed2 = 0
         self.speed3 = 0
         self.dist = 0.115
+        self.f = open("RFinfo.txt")
+        self.field = self.f.readline().split("=")[1].split("#")[0].strip()
+        self.robotChar = self.f.readline().split("=")[1].split("#")[0].strip()
+        self.n = 'rf:a' + self.field + self.robotChar
+        self.f.close()
         self.throwSpeed = 1000
         self.wheelone = 0
         self.wheeltwo = 120
         self.wheelthree = 240
-        self.ser = serial.Serial('COM3', baudrate=115200, timeout=0.01, dsrdtr=True)
+        self.gameOn = False
+        self.ser = serial.Serial('COM3', baudrate=9600, timeout=0.005)
         self.w.start()
 
     def stopThrow(self):
@@ -63,7 +74,23 @@ class DriveTest:
         self.speed2 = 0
         self.speed3 = 0
 
-
+    def parseRefCommand(self, command, field, robotChar):
+        print "cmd " + command
+        pieces = command.split(":")
+        if pieces[1][1] != field:
+            return self.gameOn
+        if pieces[1][2] != robotChar and pieces[1][2] != "X":
+            return self.gameOn
+        if "START" in command:
+            self.ser.write(self.n + 'ACK-----\r\n')
+            return True
+        elif "STOP" in command:
+            self.ser.write(self.n + 'ACK-----\r\n')
+            self.shutdown()
+            return False
+        elif "PING" in command:
+            self.ser.write(self.n + 'ACK-----\r\n')
+            return self.gameOn
 
     # print(self.ser.isOpen(self))
 
