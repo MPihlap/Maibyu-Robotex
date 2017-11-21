@@ -49,7 +49,7 @@ def readin(filename):
 ##vana 20.11.2017
 knownWidth = 16
 #focallength = (64 * 128) / knownWidth
-
+distBuffer = deque()
 focallength = (59 * 151)/ knownWidth
 
 # define the lower and upper boundaries of the
@@ -78,9 +78,9 @@ soidanOtse = False
 circlingBall = False
 makeThrow = False
 #stopLoop = False
-keskX = 306
-basketSmall = 297
-basketLarge = 315
+keskX = 315
+basketSmall = 300
+basketLarge = 312
 counter = 0
 #gameOn = False
 basketIsLeft = -1
@@ -177,7 +177,8 @@ def findAngle(x, y):
 
 
 def throwStrength(distance):
-    if distance <= 110:
+    return 1165 + distance
+    """if distance <= 110:
         #algvaartus 1232
         distance_ = distance - 70 + 1222
         print ("Kaugus + tugevus: " + str(distance) + " " + str(distance_))
@@ -186,7 +187,7 @@ def throwStrength(distance):
         #algvaartus 1083
         distance___ = 1063 + distance * 1.6
         print ("Kaugus + tugevus: " + str(distance) + " " + str(distance___))
-        return distance___
+        return distance___"""
 
 
 drive = DriveTest()
@@ -223,7 +224,8 @@ while True:
                                 cv2.CHAIN_APPROX_SIMPLE)[-2]
         cntsPurple = cv2.findContours(maskBlue, cv2.RETR_EXTERNAL,
                                       cv2.CHAIN_APPROX_SIMPLE)[-2]
-
+        if len(distBuffer) > 30:
+            distBuffer.popleft()
         ballIsMiddle = False
         basketIsMiddle = False
         bothMiddle = False
@@ -236,13 +238,17 @@ while True:
             # drive.shutdown()
         if len(cntsPurple) > 0:
             basketx, baskety, w, h = drawThing(cntsPurple, False)
+            cv2.putText(frame, str(basketx + int(w / 2)), (10, 370), cv2.FONT_HERSHEY_DUPLEX, 1,
+                        cv2.COLOR_YUV420sp2GRAY)
             # lisatav number on korvi laius(vaja kontrollida, kas on ikka 8)
             distance = 8 + (knownWidth * focallength / w)
+            if distance > 0:
+                distBuffer.append(distance)
             cv2.putText(frame, "Kaugus: " + str(distance), (10, 200), cv2.FONT_HERSHEY_DUPLEX, 1,
                         cv2.COLOR_YUV420sp2GRAY)
             cv2.putText(frame, "Pindala: " + str(cv2.contourArea(max(cntsPurple, key=cv2.contourArea))), (10, 250), cv2.FONT_HERSHEY_DUPLEX, 1,
                         cv2.COLOR_YUV420sp2GRAY)
-
+        speed = 1000
         if drive.gameOn:
             if makeThrow:  # If we have spun around the ball and are going to throw
                 counter += 1
@@ -250,7 +256,12 @@ while True:
                     # basketx, baskety, w, h = drawThing(cntsPurple, False)
                     drive.setspeed(90, 10)
                     if counter == 1:
-                        drive.startThrow(throwStrength(distance))
+                        if len(distBuffer) > 0:
+                            mindist = min(distBuffer)
+                            print mindist
+                            if mindist > 0:
+                                speed = throwStrength(mindist)
+                        drive.startThrow(speed)
             elif len(cnts) > 0 and cv2.contourArea(max(cnts, key=cv2.contourArea)) > 30:
                 #print(len(cnts))
                 ballx, bally = drawThing(cnts, True)
@@ -261,11 +272,12 @@ while True:
 
                 if circlingBall:  # When we are spinning around the ball
                     if len(cntsPurple) > 0:
-                        if basketx + int(w / 2) < keskX:
+                        if basketx < keskX:
                             drive.circleBallRight()
                         else:
                             drive.circleBallLeft()
-                        basketIsMiddle = isMiddle(basketx + int(w / 2))
+                        basketIsMiddle = isMiddle(basketx)
+
                         # print (basketx + int(w/2))
                         ballIsMiddle = ballMiddle(ballx)
                         # print("pall: "+str(ballIsMiddle))
