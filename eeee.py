@@ -80,8 +80,8 @@ circlingBall = False
 makeThrow = False
 # stopLoop = False
 keskX = 315
-basketSmall = 300
-basketLarge = 312
+basketSmall = keskX - 5
+basketLarge = keskX + 5
 counter = 0
 # gameOn = False
 basketIsLeft = -1
@@ -158,7 +158,7 @@ kernelBasket = np.ones((4, 4), np.uint8)
 
 
 def ballMiddle(x):
-    if x >= 297 and x < 315:
+    if x >= keskX - 5 and x < keskX + 5:
         return True
     else:
         return False
@@ -243,10 +243,10 @@ while True:
         # drive.shutdown()
     if len(cntsPurple) > 0:
         basketx, baskety, w, h = drawThing(cntsPurple, False)
-        cv2.putText(frame, str(basketx + int(w / 2)), (10, 370), cv2.FONT_HERSHEY_DUPLEX, 1,
+        cv2.putText(frame, "basketX " + str(basketx), (10, 370), cv2.FONT_HERSHEY_DUPLEX, 1,
                     cv2.COLOR_YUV420sp2GRAY)
         # lisatav number on korvi laius(vaja kontrollida, kas on ikka 8)
-        distance = 8 + (knownWidth * focallength / w)
+        distance = (knownWidth * focallength / w) # + 8
         if distance > 0:
             distBuffer.append(distance)
         cv2.putText(frame, "Kaugus: " + str(distance), (10, 200), cv2.FONT_HERSHEY_DUPLEX, 1,
@@ -305,7 +305,7 @@ while True:
                     drive.circleBallLeft()
                     circlingBall = True
                 else:
-                    if ballx < 307:
+                    if ballx < keskX:
                         drive.setspeed(180, 10)
                     else:
                         drive.setspeed(0, 10)
