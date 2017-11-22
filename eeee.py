@@ -46,29 +46,30 @@ def readin(filename):
             x = 0
     return np.array(alam), np.array(korgem)
 
+
 ##vana 20.11.2017
 knownWidth = 16
-#focallength = (64 * 128) / knownWidth
+# focallength = (64 * 128) / knownWidth
 distBuffer = deque()
-focallength = (59 * 151)/ knownWidth
+focallength = (59 * 151) / knownWidth
 
 # define the lower and upper boundaries of the
 # ball in the HSV color space, then initialize the
 # list of tracked points
 greenLower, greenUpper = readin("Pall.txt")
-#greenLower = (40, 46, 58)
-#greenUpper = (78, 88, 206)
+# greenLower = (40, 46, 58)
+# greenUpper = (78, 88, 206)
 # 5,38,255,255,43,160
 # VANAD
 teamPink = False
 if teamPink:  # Attacking blue basket
     basketLower, basketUpper = readin("Varavsinine.txt")
-    #basketLower = (100, 79, 124)
-    #basketUpper = (108, 145, 191)
+    # basketLower = (100, 79, 124)
+    # basketUpper = (108, 145, 191)
 else:  # Attacking pink basket
     basketLower, basketUpper = readin("VaravLilla.txt")
-    #basketLower = (0, 52, 144)
-    #basketUpper = (57, 79, 209)
+    # basketLower = (0, 52, 144)
+    # basketUpper = (57, 79, 209)
 # blueLower = (30, 90, 52)
 # blueUpper = (47, 139, 76)
 
@@ -77,12 +78,12 @@ basketIsMiddle = False
 soidanOtse = False
 circlingBall = False
 makeThrow = False
-#stopLoop = False
+# stopLoop = False
 keskX = 315
 basketSmall = 300
 basketLarge = 312
 counter = 0
-#gameOn = False
+# gameOn = False
 basketIsLeft = -1
 
 pts = deque()
@@ -122,14 +123,14 @@ def drawThing(cnts, isBall):
                             cv2.FONT_HERSHEY_DUPLEX, 1, cv2.COLOR_YUV420sp2GRAY)
         return x, y
     else:
-        #x, y, w, h = cv2.boundingRect(c)
+        # x, y, w, h = cv2.boundingRect(c)
 
         rect = cv2.minAreaRect(c)
         box = cv2.boxPoints(rect)
         box = np.int0(box)
         M = cv2.moments(c)
         center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
-        #if w > 5:
+        # if w > 5:
         rotation = rect[2]
         if rotation < -10:
             h = rect[1][0]
@@ -142,7 +143,7 @@ def drawThing(cnts, isBall):
 
         # qprint (x,y,w,h)
         if w > 5:
-            #cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 255), 2)
+            # cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 255), 2)
             cv2.drawContours(frame, [box], 0, (0, 0, 255), 2)
             cv2.putText(frame, "Laius: " + str(round(w)), (10, 300), cv2.FONT_HERSHEY_DUPLEX, 1,
                         cv2.COLOR_YUV420sp2GRAY)
@@ -163,9 +164,13 @@ def ballMiddle(x):
         return False
 
 
+def moveSpeed(bally):
+    return max(70 - int(bally / 6), 20)
+
+
 def isMiddle(x):
     if x >= basketSmall and x < basketLarge:
-    #if x >= 315 and x < 325:
+        # if x >= 315 and x < 325:
         # if x >= 300 and x < 320:
         return True
     else:
@@ -192,149 +197,151 @@ def throwStrength(distance):
 
 drive = DriveTest()
 rfser = drive.ser
-print ("Press 'p' to start: ")
-print n
+print("Press 'p' to start: ")
+print(n)
 while True:
-        # grab the current frame
-        (grabbed, frame) = camera.read()
-        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+    # grab the current frame
+    (grabbed, frame) = camera.read()
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
-        # construct a mask for the color "green", then perform
-        # a series of dilations and erosions to remove any small
-        # blobs left in the mask
-        # erode + dilate asemel saab kasutada opening.
+    # construct a mask for the color "green", then perform
+    # a series of dilations and erosions to remove any small
+    # blobs left in the mask
+    # erode + dilate asemel saab kasutada opening.
 
-        mask = cv2.inRange(hsv, greenLower, greenUpper)
-        mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
+    mask = cv2.inRange(hsv, greenLower, greenUpper)
+    mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
 
-        # mask = cv2.erode(mask, None, iterations=1)
-        # mask = cv2.dilate(mask, None, iterations=1)
+    # mask = cv2.erode(mask, None, iterations=1)
+    # mask = cv2.dilate(mask, None, iterations=1)
 
-        maskBlue = cv2.inRange(hsv, basketLower, basketUpper)
-        maskBlue = cv2.morphologyEx(maskBlue, cv2.MORPH_CLOSE, kernelBasket)
-        maskBlue = cv2.morphologyEx(maskBlue, cv2.MORPH_OPEN, kernelBasket)
-        maskCombo = cv2.add(mask, maskBlue)
-        cv2.imshow("combo", maskCombo)
-        # maskBlue = cv2.erode(maskBlue, None, iterations=1)
-        # maskBlue = cv2.dilate(maskBlue, None, iterations=1)
+    maskBlue = cv2.inRange(hsv, basketLower, basketUpper)
+    maskBlue = cv2.morphologyEx(maskBlue, cv2.MORPH_CLOSE, kernelBasket)
+    maskBlue = cv2.morphologyEx(maskBlue, cv2.MORPH_OPEN, kernelBasket)
+    maskCombo = cv2.add(mask, maskBlue)
+    cv2.imshow("combo", maskCombo)
+    # maskBlue = cv2.erode(maskBlue, None, iterations=1)
+    # maskBlue = cv2.dilate(maskBlue, None, iterations=1)
 
-        # find contours in the mask and initialize the current
-        # (x, y) center of the ball
-        cnts = cv2.findContours(mask, cv2.RETR_EXTERNAL,
-                                cv2.CHAIN_APPROX_SIMPLE)[-2]
-        cntsPurple = cv2.findContours(maskBlue, cv2.RETR_EXTERNAL,
-                                      cv2.CHAIN_APPROX_SIMPLE)[-2]
-        if len(distBuffer) > 30:
-            distBuffer.popleft()
-        ballIsMiddle = False
-        basketIsMiddle = False
-        bothMiddle = False
-        # print("COunter"+str(counter))
-        if counter > 60:
-            counter = 0
-            makeThrow = False
-            drive.stopThrow()
-            # gameOn = False
-            # drive.shutdown()
-        if len(cntsPurple) > 0:
-            basketx, baskety, w, h = drawThing(cntsPurple, False)
-            cv2.putText(frame, str(basketx + int(w / 2)), (10, 370), cv2.FONT_HERSHEY_DUPLEX, 1,
-                        cv2.COLOR_YUV420sp2GRAY)
-            # lisatav number on korvi laius(vaja kontrollida, kas on ikka 8)
-            distance = 8 + (knownWidth * focallength / w)
-            if distance > 0:
-                distBuffer.append(distance)
-            cv2.putText(frame, "Kaugus: " + str(distance), (10, 200), cv2.FONT_HERSHEY_DUPLEX, 1,
-                        cv2.COLOR_YUV420sp2GRAY)
-            cv2.putText(frame, "Pindala: " + str(cv2.contourArea(max(cntsPurple, key=cv2.contourArea))), (10, 250), cv2.FONT_HERSHEY_DUPLEX, 1,
-                        cv2.COLOR_YUV420sp2GRAY)
-        speed = 1000
-        if drive.gameOn:
-            if makeThrow:  # If we have spun around the ball and are going to throw
-                counter += 1
+    # find contours in the mask and initialize the current
+    # (x, y) center of the ball
+    cnts = cv2.findContours(mask, cv2.RETR_EXTERNAL,
+                            cv2.CHAIN_APPROX_SIMPLE)[-2]
+    cntsPurple = cv2.findContours(maskBlue, cv2.RETR_EXTERNAL,
+                                  cv2.CHAIN_APPROX_SIMPLE)[-2]
+    if len(distBuffer) > 30:
+        distBuffer.popleft()
+    ballIsMiddle = False
+    basketIsMiddle = False
+    bothMiddle = False
+    # print("COunter"+str(counter))
+    if counter > 60:
+        counter = 0
+        makeThrow = False
+        drive.stopThrow()
+        # gameOn = False
+        # drive.shutdown()
+    if len(cntsPurple) > 0:
+        basketx, baskety, w, h = drawThing(cntsPurple, False)
+        cv2.putText(frame, str(basketx + int(w / 2)), (10, 370), cv2.FONT_HERSHEY_DUPLEX, 1,
+                    cv2.COLOR_YUV420sp2GRAY)
+        # lisatav number on korvi laius(vaja kontrollida, kas on ikka 8)
+        distance = 8 + (knownWidth * focallength / w)
+        if distance > 0:
+            distBuffer.append(distance)
+        cv2.putText(frame, "Kaugus: " + str(distance), (10, 200), cv2.FONT_HERSHEY_DUPLEX, 1,
+                    cv2.COLOR_YUV420sp2GRAY)
+        cv2.putText(frame, "Pindala: " + str(cv2.contourArea(max(cntsPurple, key=cv2.contourArea))), (10, 250),
+                    cv2.FONT_HERSHEY_DUPLEX, 1,
+                    cv2.COLOR_YUV420sp2GRAY)
+    speed = 1000
+    if drive.gameOn:
+        if makeThrow:  # If we have spun around the ball and are going to throw
+            counter += 1
+            if len(cntsPurple) > 0:
+                # basketx, baskety, w, h = drawThing(cntsPurple, False)
+                drive.setspeed(90, 10)
+                if counter == 1:
+                    if len(distBuffer) > 0:
+                        mindist = min(distBuffer)
+                        print(mindist)
+                        if mindist > 0:
+                            speed = throwStrength(mindist)
+                    drive.startThrow(speed)
+        elif len(cnts) > 0 and cv2.contourArea(max(cnts, key=cv2.contourArea)) > 30:
+            # print(len(cnts))
+            ballx, bally = drawThing(cnts, True)
+            angle = findAngle(ballx, bally)
+            # print(str(pallx)+" "+ str(pally)+" "+str(nurk))
+            # print(ballx)
+            ballIsMiddle = ballMiddle(ballx)
+
+            if circlingBall:  # When we are spinning around the ball
                 if len(cntsPurple) > 0:
-                    # basketx, baskety, w, h = drawThing(cntsPurple, False)
-                    drive.setspeed(90, 10)
-                    if counter == 1:
-                        if len(distBuffer) > 0:
-                            mindist = min(distBuffer)
-                            print mindist
-                            if mindist > 0:
-                                speed = throwStrength(mindist)
-                        drive.startThrow(speed)
-            elif len(cnts) > 0 and cv2.contourArea(max(cnts, key=cv2.contourArea)) > 30:
-                #print(len(cnts))
-                ballx, bally = drawThing(cnts, True)
-                angle = findAngle(ballx, bally)
-                # print(str(pallx)+" "+ str(pally)+" "+str(nurk))
-                # print(ballx)
-                ballIsMiddle = ballMiddle(ballx)
-
-                if circlingBall:  # When we are spinning around the ball
-                    if len(cntsPurple) > 0:
-                        if basketx < keskX:
-                            drive.circleBallRight()
-                        else:
-                            drive.circleBallLeft()
-                        basketIsMiddle = isMiddle(basketx)
-
-                        # print (basketx + int(w/2))
-                        ballIsMiddle = ballMiddle(ballx)
-                        # print("pall: "+str(ballIsMiddle))
-                        # print("korv: "+str(basketIsMiddle))
-                        if basketIsMiddle:
-                            drive.shutdown()
-                            # print("Korv ja pall keskel")
-                            circlingBall = False
-                            makeThrow = True
-                            # gameOn = False
-                            drive.stopThrow()
-
-
+                    if basketx < keskX:
+                        drive.circleBallRight()
                     else:
                         drive.circleBallLeft()
-                elif bally > 400:  # If we are close enough to the ball after approaching it
-                    if ballIsMiddle and not makeThrow:
-                        # drive.shutdown()
-                        drive.circleBallLeft()
-                        circlingBall = True
-                    else:
-                        if ballx < 307:
-                            drive.setspeed(180, 10)
-                        else:
-                            drive.setspeed(0, 10)
+                    basketIsMiddle = isMiddle(basketx)
+
+                    # print (basketx + int(w/2))
+                    ballIsMiddle = ballMiddle(ballx)
+                    # print("pall: "+str(ballIsMiddle))
+                    # print("korv: "+str(basketIsMiddle))
+                    if basketIsMiddle:
+                        drive.shutdown()
+                        # print("Korv ja pall keskel")
+                        circlingBall = False
+                        makeThrow = True
+                        # gameOn = False
+                        drive.stopThrow()
+
 
                 else:
-                    drive.setspeed(angle, 30)
-            elif counter == 0:
-                drive.spinleft()
+                    drive.circleBallLeft()
+            elif bally > 400:  # If we are close enough to the ball after approaching it
+                if ballIsMiddle and not makeThrow:
+                    # drive.shutdown()
+                    drive.circleBallLeft()
+                    circlingBall = True
+                else:
+                    if ballx < 307:
+                        drive.setspeed(180, 10)
+                    else:
+                        drive.setspeed(0, 10)
 
-            if ballIsMiddle & basketIsMiddle:
-                bothMiddle = True
-                cv2.putText(frame, "Molemad on keskel! :O", (10, 370), cv2.FONT_HERSHEY_DUPLEX, 1,
-                            cv2.COLOR_YUV420sp2GRAY)
-        center = None
-        cv2.line(frame, (keskX, 0), (keskX, 480), (255, 0, 0), 1)
-        cv2.line(frame, (basketSmall, 0), (basketSmall, 480), (255, 0, 0), 1)
-        cv2.line(frame, (basketLarge, 0), (basketLarge, 480), (255, 0, 0), 1)
+            else:
+                #drive.setspeed(angle, 30)
+                drive.setspeed(angle, moveSpeed(bally))
+        elif counter == 0:
+            drive.spinleft()
 
-        # show the frame to our screen
-        cv2.imshow("Frame", frame)
-        key = cv2.waitKey(1) & 0xFF
+        if ballIsMiddle & basketIsMiddle:
+            bothMiddle = True
+            cv2.putText(frame, "Molemad on keskel! :O", (10, 370), cv2.FONT_HERSHEY_DUPLEX, 1,
+                        cv2.COLOR_YUV420sp2GRAY)
+    center = None
+    cv2.line(frame, (keskX, 0), (keskX, 480), (255, 0, 0), 1)
+    cv2.line(frame, (basketSmall, 0), (basketSmall, 480), (255, 0, 0), 1)
+    cv2.line(frame, (basketLarge, 0), (basketLarge, 480), (255, 0, 0), 1)
 
-        # if the 'q' key is pressed, stop the loop
-        if key == ord("q"):
-            ##cv2.imwrite("test.png", frame)
-            drive.shutdown()
-            drive.stopThrow()
-            drive.running = False
-            stopLoop = True
-            break
-        # if the 'p' key is pressed, pause/unpause robot game logic
-        elif key == ord("p"):
-            drive.gameOn = not drive.gameOn
-            drive.shutdown()
-            drive.stopThrow()
+    # show the frame to our screen
+    cv2.imshow("Frame", frame)
+    key = cv2.waitKey(1) & 0xFF
+
+    # if the 'q' key is pressed, stop the loop
+    if key == ord("q"):
+        ##cv2.imwrite("test.png", frame)
+        drive.shutdown()
+        drive.stopThrow()
+        drive.running = False
+        stopLoop = True
+        break
+    # if the 'p' key is pressed, pause/unpause robot game logic
+    elif key == ord("p"):
+        drive.gameOn = not drive.gameOn
+        drive.shutdown()
+        drive.stopThrow()
 drive.running = False
 # cleanup the camera and close any open windows
 camera.release()
