@@ -1,4 +1,5 @@
 from collections import deque
+import numpy as np
 import cv2
 
 from driveTest import DriveTest
@@ -22,6 +23,8 @@ pts = deque()
 #grab the reference to the webcam
 camera = cv2.VideoCapture(0)
 #drive = DriveTest()
+kernel = np.ones((2, 2), np.uint8)
+kernelBasket = np.ones((4, 4), np.uint8)
 while True:
     # grab the current frame
     (grabbed, frame) = camera.read()
@@ -30,14 +33,19 @@ while True:
     # construct a mask for the color "green", then perform
     # a series of dilations and erosions to remove any small
     # blobs left in the m((x, y), radius) = cv2.minEnclosingCircle(c)
-    c = max(cnts, key=cv2.contourArea)
-    x, y, w, h = cv2.boundingRect(c)
-    M = cv2.moments(c)
+    maskBall = cv2.inRange(hsv, greenLower, greenUpper)
+    maskBall = cv2.morphologyEx(maskBall, cv2.MORPH_OPEN, kernel)
+    cnts = cv2.findContours(maskBall, cv2.RETR_EXTERNAL,
+                            cv2.CHAIN_APPROX_SIMPLE)[-2]
+    if len(cnts) > 0:
+        c = max(cnts, key=cv2.contourArea)
+        x, y, w, h = cv2.boundingRect(c)
+        M = cv2.moments(c)
     #center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
 
     # only proceed if the radius meets a minimum size
-    radius = 500
-    if radius > 0:
+    #radius = 500
+    #if radius > 0:
         # draw the circle and centroid on the frame,
         # then update the list of tracked points
 

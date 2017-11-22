@@ -109,7 +109,7 @@ def drawThing(cnts, isBall):
         M = cv2.moments(c)
         if M["m00"] > 0:
             center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
-            # print("Raadius: "+ str(radius))
+            # print("Raadius: " + str(radius))
             # only proceed if the radius meets a minimum size
             if radius > 3:
                 # draw the circle and centroid on the frame,
@@ -268,7 +268,7 @@ while True:
                         if mindist > 0:
                             speed = throwStrength(mindist)
                     drive.startThrow(speed)
-        elif len(cnts) > 0 and cv2.contourArea(max(cnts, key=cv2.contourArea)) > 30:
+        elif len(cnts) > 0 and cv2.contourArea(max(cnts, key=cv2.contourArea)) > 30: #Siia lisada tingimus and isOnField()
             # print(len(cnts))
             ballx, bally = drawThing(cnts, True)
             angle = findAngle(ballx, bally)

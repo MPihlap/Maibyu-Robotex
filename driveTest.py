@@ -75,7 +75,7 @@ class DriveTest:
         self.speed3 = 0
 
     def parseRefCommand(self, command, field, robotChar):
-        print "cmd " + command
+        print ("cmd " + command)
         pieces = command.split(":")
         if pieces[1][1] != field:
             return self.gameOn
