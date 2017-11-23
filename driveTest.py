@@ -64,13 +64,13 @@ class DriveTest:
         self.speed3 = 9
 
 
-    def circleBallLeft(self):
-        self.speed1 = 9
+    def circleBallLeft(self, speed):
+        self.speed1 = speed #9
         self.speed2 = 0
         self.speed3 = 0
 
-    def circleBallRight(self):
-        self.speed1 = -9
+    def circleBallRight(self, speed):
+        self.speed1 = -speed
         self.speed2 = 0
         self.speed3 = 0
 

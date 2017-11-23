@@ -5,6 +5,7 @@ import time
 import numpy as np
 distBuffer = deque()
 drive = DriveTest()
+keskX = 315
 f = open("visketugevused.csv","a")
 def throwStr(distance):
     return 1165 + distance #1150 lhedalt
@@ -85,7 +86,7 @@ def readin(filename):
             korgem.append(int(i))
             x = 0
     return np.array(alam), np.array(korgem)
-teamPink = False
+teamPink = True
 if teamPink:  # Attacking blue basket
     basketLower, basketUpper = readin("Varavsinine.txt")
     #basketLower = (100, 79, 124)
@@ -135,7 +136,7 @@ while True:
     ones = cv2.getTrackbarPos("Ones","image")
     #speed = 1000+hundreds+tens+ones
     #cv2.putText(image, "kiirus: " + str(speed), (20, 240), cv2.FONT_HERSHEY_DUPLEX, 1, cv2.COLOR_YUV2GRAY_420)
-    cv2.line(image, (306, 0), (306, 480), (255, 0, 0), 1)
+    cv2.line(image, (keskX, 0), (keskX, 480), (255, 0, 0), 1)
     cv2.imshow("image", image)
     counter+= 1
     speed = 1000
