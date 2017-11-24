@@ -12,9 +12,9 @@ class DriveTest:
             vastus = self.ser.read(19)
             if len(vastus) > 0:
                 self.rfcommand += vastus
+                print("vahepealne: "+vastus)
                 if len(self.rfcommand) == 19:
-                    print(vastus)
-                    self.gameOn = self.parseRefCommand(vastus,self.field,self.robotChar)
+                    self.gameOn = self.parseRefCommand(self.rfcommand,self.field,self.robotChar)
                     print(self.gameOn)
                     self.rfcommand = ""
             text = ("sd:" + str(self.speed1) + ":" + str(self.speed2) + ":" + str(self.speed3) + "\r\n")
