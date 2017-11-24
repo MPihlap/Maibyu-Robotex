@@ -55,7 +55,7 @@ def ballMiddle(x):
 
 
 def moveSpeed(bally):
-    return max(100 - int(bally / 5), 20)
+    return max(90 - int(bally / 5), 20)
 
 
 def isMiddle(x):
@@ -77,11 +77,12 @@ def pause():
     drive.stopThrow()
 
 def throwStrength(distance):
+    base = 1137 #1132
     if distance > 250:
-        return 1165 + distance
+        return base + 33 + distance #23
     if distance <= 110:
-        return 1142 + distance
-    return 1155 + distance
+        return base + distance
+    return base + 13 + distance
 
 def drawThing(cnts, isBall):
     # find the largest contour in the mask, then use
@@ -94,7 +95,7 @@ def drawThing(cnts, isBall):
         if pindala < 30:
             return -1, -1
     else:
-        if pindala < 600:
+        if pindala < 400:
             return -1, -1, -1, -1
     if isBall:
         ((x, y), radius) = cv2.minEnclosingCircle(c)
