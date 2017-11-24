@@ -5,7 +5,7 @@ import time
 import numpy as np
 distBuffer = deque()
 drive = DriveTest()
-keskX = 315
+keskX = 317
 f = open("visketugevused.csv","a")
 def throwStr(distance):
     return 1165 + distance #1150 lhedalt
@@ -134,22 +134,24 @@ while True:
     hundreds = cv2.getTrackbarPos("Hundreds","image")*100
     tens = cv2.getTrackbarPos("Tens","image")*10
     ones = cv2.getTrackbarPos("Ones","image")
-    #speed = 1000+hundreds+tens+ones
+    speed = 1000+hundreds+tens+ones
     #cv2.putText(image, "kiirus: " + str(speed), (20, 240), cv2.FONT_HERSHEY_DUPLEX, 1, cv2.COLOR_YUV2GRAY_420)
     cv2.line(image, (keskX, 0), (keskX, 480), (255, 0, 0), 1)
     cv2.imshow("image", image)
     counter+= 1
-    speed = 1000
+    #speed = 1000
     #if distance > 0:
     #    speed = throwStr(distance)
     if distance > 0:
         distBuffer.append(distance)
-    if len(distBuffer) > 0:
+
+    """if len(distBuffer) > 0:
         mindist = min(distBuffer)
         print mindist
         if mindist > 0:
             speed = throwStr(mindist)
-    if len(distBuffer) > 30:
+    """
+    if len(distBuffer) > 10:
         distBuffer.popleft()
     if counter == 5:
         counter = 0
@@ -157,8 +159,10 @@ while True:
     key = cv2.waitKey(1) & 0xFF
     # if the 'q' key is pressed, stop the loop
     if key == ord("m"):
-        print str(distance) + "," +str(speed)+"\n"
-        f.write(str(round(distance, 2)) + "," +str(speed)+"\n")
+        #print str(min(distBuffer)) + "," +str(speed)+"\n"
+        print str(max(distBuffer)) + "," +str(speed)+"\n"
+        #f.write(str(round(min(distBuffer), 2)) + "," +str(speed)+"\n")
+        f.write(str(round(max(distBuffer), 2)) + "," +str(speed)+"\n")
     if key == ord("q"):
         ##cv2.imwrite("test.png", frame)
         drive.shutdown()
