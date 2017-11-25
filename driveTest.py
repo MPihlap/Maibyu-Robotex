@@ -14,6 +14,7 @@ class DriveTest:
                 self.rfcommand += vastus
                 print("vahepealne: "+vastus)
                 if len(self.rfcommand) == 19:
+                    #Hi there
                     self.gameOn = self.parseRefCommand(self.rfcommand,self.field,self.robotChar)
                     print(self.gameOn)
                     self.rfcommand = ""

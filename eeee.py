@@ -16,7 +16,12 @@ def readThrowStr(filename):
     end = []
     for i in f:
         pieces = i.strip().split(",")
-        end.append((round(float(pieces[0])), round(float(pieces[1]))))
+
+        dist = round(float(pieces[0]))
+        str = round(float(pieces[1]))
+        #if dist > 200:
+        #s    str -= 10
+        end.append((dist, str))
     return end
 
 def wasdControl():
@@ -64,7 +69,8 @@ def ballMiddle(x):
 
 def moveSpeed(bally):
     return max(90 - int(bally / 5), 20)
-
+def sidewaysMoveSpeed(basketx):
+    return max()
 
 def isMiddle(x):
     if x >= basketSmall and x < basketLarge:
@@ -179,6 +185,7 @@ throwStrengths = readThrowStr("visketugevused.csv")
 greenLower, greenUpper = readin("Pall.txt")
 borderLower, borderUpper = readin("mustpiir.txt")
 teamPink = True
+
 if teamPink:  # Attacking blue basket
     basketLower, basketUpper = readin("Varavsinine.txt")
 
@@ -193,8 +200,8 @@ circlingBall = False
 makeThrow = False
 # stopLoop = False
 keskX = 310
-basketSmall = keskX - 15
-basketLarge = keskX + 15
+basketSmall = keskX - 7
+basketLarge = keskX + 7
 counter = 0
 # gameOn = False
 basketIsLeft = None
