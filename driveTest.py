@@ -11,17 +11,23 @@ class DriveTest:
             # print(self.speed1)
             vastus = self.ser.read(19)
             if len(vastus) > 0:
-                print(vastus)
-                self.gameOn = self.parseRefCommand(vastus, self.field, self.robotChar)
-                print(self.gameOn)
+                self.rfcommand += vastus
+                print("vahepealne: "+vastus)
+                if len(self.rfcommand) == 19:
+                    #Hi there
+                    self.gameOn = self.parseRefCommand(self.rfcommand,self.field,self.robotChar)
+                    print(self.gameOn)
+                    self.rfcommand = ""
             text = ("sd:" + str(self.speed1) + ":" + str(self.speed2) + ":" + str(self.speed3) + "\r\n")
-            self.ser.write('f0\r\n'.encode('utf-8'))
-            time.sleep(0.005)
+            #self.ser.write('f0\r\n'.encode('utf-8'))
+            #time.sleep(0.002)
             self.ser.write(text.encode('utf-8'))
-            time.sleep(0.005)
-            self.ser.write(('d:' + str(self.throwSpeed) + '\r\n').encode('utf-8'))
+            time.sleep(0.002)
+            self.ser.write(('d:'+ str(self.throwSpeed)+ '\r\n').encode('utf-8'))
+
 
     def __init__(self):
+        self.rfcommand = ""
         self.running = True
         self.w = threading.Thread(name='commandThread', target=self.commandThread)
         self.speed1 = 0
