@@ -181,7 +181,10 @@ knownWidth = 16
 distBuffer = deque()
 focallength = (59 * 151) / knownWidth
 #focallength = (129 * 120) /knownWidth
-throwStrengths = readThrowStr("visketugevused.csv")
+throwStrengths = sorted(readThrowStr("visketugevused.csv"))
+for i in throwStrengths:
+    print i
+
 greenLower, greenUpper = readin("Pall.txt")
 borderLower, borderUpper = readin("mustpiir.txt")
 teamPink = True
@@ -199,7 +202,7 @@ soidanOtse = False
 circlingBall = False
 makeThrow = False
 # stopLoop = False
-keskX = 310
+keskX = 307
 basketSmall = keskX - 7
 basketLarge = keskX + 7
 counter = 0
@@ -320,9 +323,9 @@ while True:
             if circlingBall:  # When we are spinning around the ball
                 if len(cntsPurple) > 0 and cv2.contourArea(max(cntsPurple, key=cv2.contourArea)) > 75:
                     if basketx < keskX:
-                        drive.circleBallRight(9)
+                        drive.circleBallRight(7)
                     else:
-                        drive.circleBallLeft(9)
+                        drive.circleBallLeft(7)
                     basketIsMiddle = isMiddle(basketx)
 
                     # print (basketx + int(w/2))
@@ -340,9 +343,9 @@ while True:
                             #pause()
                         else:
                             if ballx < keskX:
-                                drive.setspeed(180, 5)
+                                drive.setspeed(180, 3)
                             else:
-                                drive.setspeed(0, 5)
+                                drive.setspeed(0, 3)
 
 
                 else:
