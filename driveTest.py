@@ -107,6 +107,10 @@ class DriveTest:
         self.throwSpeed = speed
 
     def setspeed(self, suund, speed):
+        if speed - self.lastSpeed > 50:
+            newSpeed = self.lastSpeed + 2
+            self.lastSpeed = newSpeed
+            speed = newSpeed
         self.speed1 = int(self.wheelLogic(-speed, self.wheelone, suund))
         self.speed2 = int(self.wheelLogic(-speed, self.wheeltwo, suund))
         self.speed3 = int(self.wheelLogic(-speed, self.wheelthree, suund))
