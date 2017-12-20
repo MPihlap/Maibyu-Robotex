@@ -30,13 +30,13 @@ def wasdControl():
     if key == ord("u"):
         drive.spinright()
     if key == ord("w"):
-        drive.setspeed(90, 30)
+        drive.setspeed(90, 40)
     if key == ord("a"):
-        drive.setspeed(180, 30)
+        drive.setspeed(180, 40)
     if key == ord("s"):
-        drive.setspeed(270, 30)
+        drive.setspeed(270, 40)
     if key == ord("d"):
-        drive.setspeed(0, 30)
+        drive.setspeed(0, 40)
     if key == 32:  # spacebar to stop
         drive.shutdown()
 
@@ -188,12 +188,14 @@ for i in throwStrengths:
 greenLower, greenUpper = readin("Pall.txt")
 borderLower, borderUpper = readin("mustpiir.txt")
 teamPink = True
+moveMid = False
+startLimit = 75
 
 if teamPink:  # Attacking blue basket
-    basketLower, basketUpper = readin("Varavsinine.txt")
+    basketLower, basketUpper = readin("VaravsinineB.txt")
 
 else:  # Attacking pink basket
-    basketLower, basketUpper = readin("VaravLilla.txt")
+    basketLower, basketUpper = readin("VaravLillaB.txt")
 
 
 # pallKeskel = False
@@ -206,17 +208,22 @@ keskX = 307
 basketSmall = keskX - 7
 basketLarge = keskX + 7
 counter = 0
+startCounter = 0
 # gameOn = False
 basketIsLeft = None
 
 pts = deque()
 img = np.zeros((480, 640, 3), np.uint8)
 
-kernelBasket = np.ones((4, 4), np.uint8)
+kernelBasket = np.ones((2, 2), np.uint8)
 
 
 # grab the reference to the webcam
 camera = cv2.VideoCapture(0)
+#camera.set(cv2.CAP_PROP_FPS,50)
+for i in range (0,20):
+    print(camera.get(i))
+
 kernel = np.ones((2, 2), np.uint8)
 
 drive = DriveTest()
@@ -269,6 +276,7 @@ while True:
     basketIsMiddle = False
     bothMiddle = False
     # print("COunter"+str(counter))
+
     if counter > 60:
         counter = 0
         makeThrow = False
@@ -295,7 +303,10 @@ while True:
                     cv2.COLOR_YUV420sp2GRAY)
     speed = 1000
     if drive.gameOn:
-        if makeThrow:  # If we have spun around the ball and are going to throw
+        if startCounter < startLimit and moveMid:
+            drive.setspeed(90, 50)
+            startCounter += 1
+        elif makeThrow:  # If we have spun around the ball and are going to throw
             counter += 1
             if len(cntsPurple) > 0:
                 # basketx, baskety, w, h = drawThing(cntsPurple, False)
@@ -368,7 +379,7 @@ while True:
                 #drive.setspeed(angle, 30)
                 drive.setspeed(angle, moveSpeed(bally))
         elif counter == 0:
-            drive.spinleft()
+            drive.spinright()
 
         if ballIsMiddle & basketIsMiddle:
             bothMiddle = True

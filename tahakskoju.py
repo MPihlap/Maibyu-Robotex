@@ -140,6 +140,6 @@ while True:
     if k == 27:
         L = [h1, h2, s1, s2, v1, v2] # salvestan praegused h1-v2 muutujad, et need kirjutada faili
         print('olen siin')
-        rememberpos(L, "VaravLilla.txt")
+        rememberpos(L, "VaravLillaB.txt")
         break
 cv2.destroyAllWindows()

@@ -88,11 +88,11 @@ def readin(filename):
     return np.array(alam), np.array(korgem)
 teamPink = True
 if teamPink:  # Attacking blue basket
-    basketLower, basketUpper = readin("Varavsinine.txt")
+    basketLower, basketUpper = readin("VaravsinineB.txt")
     #basketLower = (100, 79, 124)
     #basketUpper = (108, 145, 191)
 else:  # Attacking pink basket
-    basketLower, basketUpper = readin("VaravLilla.txt")
+    basketLower, basketUpper = readin("VaravLillaB.txt")
 
 camera = cv2.VideoCapture(0)
 def none(x):

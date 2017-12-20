@@ -7,17 +7,19 @@ import time
 class DriveTest:
     def commandThread(self):
         while self.running:
-            # time.sleep(0.05)
+            time.sleep(0.002)
             # print(self.speed1)
             vastus = self.ser.read(19)
             if len(vastus) > 0:
                 self.rfcommand += vastus
                 print("vahepealne: "+vastus)
                 if len(self.rfcommand) == 19:
+                    print(self.rfcommand)
                     #Hi there
                     self.gameOn = self.parseRefCommand(self.rfcommand,self.field,self.robotChar)
                     print(self.gameOn)
                     self.rfcommand = ""
+
             text = ("sd:" + str(self.speed1) + ":" + str(self.speed2) + ":" + str(self.speed3) + "\r\n")
             #self.ser.write('f0\r\n'.encode('utf-8'))
             #time.sleep(0.002)
@@ -44,7 +46,7 @@ class DriveTest:
         self.wheeltwo = 120
         self.wheelthree = 240
         self.gameOn = False
-        self.ser = serial.Serial('COM3', baudrate=9600, timeout=0.005)
+        self.ser = serial.Serial('COM3', baudrate=9600, timeout=0.01)
         self.lastSpeed = 0
         self.w.start()
 
@@ -58,14 +60,14 @@ class DriveTest:
 
     def spinright(self):
 
-        self.speed1 = -9
-        self.speed2 = -9
-        self.speed3 = -9
+        self.speed1 = -18
+        self.speed2 = -18
+        self.speed3 = -18
 
     def spinleft(self):
-        self.speed1 = 9
-        self.speed2 = 9
-        self.speed3 = 9
+        self.speed1 = 18
+        self.speed2 = 18
+        self.speed3 = 18
 
     def circleBallLeft(self, speed):
         self.speed1 = speed  # 9
