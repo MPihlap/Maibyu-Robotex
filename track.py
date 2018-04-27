@@ -2,7 +2,7 @@ from collections import deque
 import numpy as np
 import cv2
 
-from driveTest import DriveTest
+from MainboardComms import DriveTest
 # define the lower and upper boundaries of the
 # ball in the HSV color space, then initialize the
 # list of tracked points

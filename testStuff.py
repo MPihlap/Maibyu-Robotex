@@ -1,7 +1,7 @@
 # import the necessary packages
 import numpy as np
 import cv2
-from driveTest import *
+from MainboardComms import *
 #blueLower = (24, 81, 41)
 #blueUpper = (110, 255, 96)
 blueLower = (30, 90, 52)

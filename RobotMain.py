@@ -2,7 +2,7 @@ from collections import deque
 import cv2
 import serial
 import numpy as np
-from driveTest import DriveTest
+from MainboardComms import DriveTest
 import math
 import threading
 
@@ -61,10 +61,11 @@ def readin(filename):
     return np.array(alam), np.array(korgem)
 
 def ballMiddle(x):
-    if x >= keskX - 3 and x < keskX + 3:
-        return True
-    else:
-        return False
+    return x >= keskX - 3 and x < keskX + 3
+##    if x >= keskX - 3 and x < keskX + 3:
+##        return True
+##    else:
+##        return False
 
 
 def moveSpeed(bally):
@@ -73,13 +74,14 @@ def sidewaysMoveSpeed(basketx):
     return max()
 
 def isMiddle(x):
-    if x >= basketSmall and x < basketLarge:
+    return x >= basketSmall and x < basketLarge
+    """if x >= basketSmall and x < basketLarge:
         # if x >= 315 and x < 325:
         # if x >= 300 and x < 320:
         return True
     else:
         return False
-
+    """
 
 def findAngle(x, y):
     return int(math.degrees(math.atan((keskX - x) / y)) + 90)  # 313 mootmiste tulemusena leitud keskmine
@@ -332,6 +334,8 @@ while True:
             ballIsMiddle = ballMiddle(ballx)
 
             if circlingBall:  # When we are spinning around the ball
+                if bally < 400:
+                    circlingBall = False
                 if len(cntsPurple) > 0 and cv2.contourArea(max(cntsPurple, key=cv2.contourArea)) > 75:
                     if basketx < keskX:
                         drive.circleBallRight(7)
