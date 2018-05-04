@@ -61,7 +61,7 @@ def readin(filename):
     return np.array(alam), np.array(korgem)
 
 def ballMiddle(x):
-    return x >= keskX - 3 and x < keskX + 3
+    return keskX + 3 > x >= keskX - 3
 ##    if x >= keskX - 3 and x < keskX + 3:
 ##        return True
 ##    else:
@@ -70,11 +70,12 @@ def ballMiddle(x):
 
 def moveSpeed(bally):
     return max(90 - int(bally / 5), 20)
+
 def sidewaysMoveSpeed(basketx):
     return max()
 
 def isMiddle(x):
-    return x >= basketSmall and x < basketLarge
+    return basketLarge > x >= basketSmall
     """if x >= basketSmall and x < basketLarge:
         # if x >= 315 and x < 325:
         # if x >= 300 and x < 320:
@@ -185,7 +186,7 @@ focallength = (59 * 151) / knownWidth
 #focallength = (129 * 120) /knownWidth
 throwStrengths = sorted(readThrowStr("visketugevused.csv"))
 for i in throwStrengths:
-    print i
+    print(i)
 
 greenLower, greenUpper = readin("Pall.txt")
 borderLower, borderUpper = readin("mustpiir.txt")
@@ -236,27 +237,14 @@ print("Press 'p' to start: ")
 print(n)
 
 
-
-
-while True:
-    # grab the current frame
-    (grabbed, frame) = camera.read()
+def contourify(frame):
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-
-    # construct a mask for the color "green", then perform
-    # a series of dilations and erosions to remove any small
-    # blobs left in the mask
-    # erode + dilate asemel saab kasutada opening.
-
     maskBlack = cv2.inRange(hsv, borderLower, borderUpper)
     maskBlack = cv2.morphologyEx(maskBlack, cv2.MORPH_OPEN, kernel)
-
     mask = cv2.inRange(hsv, greenLower, greenUpper)
     mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
-
     # mask = cv2.erode(mask, None, iterations=1)
     # mask = cv2.dilate(mask, None, iterations=1)
-
     maskBlue = cv2.inRange(hsv, basketLower, basketUpper)
     maskBlue = cv2.morphologyEx(maskBlue, cv2.MORPH_CLOSE, kernelBasket)
     maskBlue = cv2.morphologyEx(maskBlue, cv2.MORPH_OPEN, kernelBasket)
@@ -264,13 +252,19 @@ while True:
     cv2.imshow("combo", maskCombo)
     # maskBlue = cv2.erode(maskBlue, None, iterations=1)
     # maskBlue = cv2.dilate(maskBlue, None, iterations=1)
-
     # find contours in the mask and initialize the current
     # (x, y) center of the ball
     cnts = cv2.findContours(mask, cv2.RETR_EXTERNAL,
                             cv2.CHAIN_APPROX_SIMPLE)[-2]
     cntsPurple = cv2.findContours(maskBlue, cv2.RETR_EXTERNAL,
                                   cv2.CHAIN_APPROX_SIMPLE)[-2]
+
+    return cnts, cntsPurple
+
+while True:
+    # grab the current frame
+    (grabbed, frame) = camera.read()
+    cnts, cntsPurple = contourify(frame)
     #print(distBuffer)
     if len(distBuffer) > 15:
         distBuffer.popleft()
@@ -279,6 +273,8 @@ while True:
     bothMiddle = False
     # print("COunter"+str(counter))
 
+
+    #toimub ainult viskel
     if counter > 60:
         counter = 0
         makeThrow = False
@@ -287,6 +283,7 @@ while True:
         # gameOn = False
         # drive.shutdown()
 
+    #toimub iga kord
     if len(cntsPurple) > 0:
         basketx, baskety, w, h = drawThing(cntsPurple, False)
         if basketx > 0:
@@ -393,7 +390,7 @@ while True:
     cv2.line(frame, (keskX, 0), (keskX, 480), (255, 0, 0), 1)
     cv2.line(frame, (basketSmall, 0), (basketSmall, 480), (255, 0, 0), 1)
     cv2.line(frame, (basketLarge, 0), (basketLarge, 480), (255, 0, 0), 1)
-    cv2.line(frame,(0,400),(640,400),(0,0,255),1)
+    cv2.line(frame, (0 ,400),(640,400),(0,0,255),1)
 
     # show the frame to our screen
     cv2.imshow("Frame", frame)
@@ -403,7 +400,7 @@ while True:
     # if the 'q' key is pressed, stop the loop
     wasdControl()
     if key == ord("."):
-        print basketIsLeft
+        print (basketIsLeft)
     if key == ord("q"):
         ##cv2.imwrite("test.png", frame)
         drive.shutdown()

@@ -1,0 +1,6 @@
+otsin palli
+liigun pallini
+tiirlen ümber palli: circlingBall
+teen viske:  makeThrow
+
+igas state-is toimub kaameralt lugemine, pildi uuendamine, pildile joonistamine, kauguste arvutamine.
