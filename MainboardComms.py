@@ -4,7 +4,7 @@ import threading
 import time
 
 
-class DriveTest:
+class Mainboard:
     def commandThread(self):
         while self.running:
             time.sleep(0.002)
