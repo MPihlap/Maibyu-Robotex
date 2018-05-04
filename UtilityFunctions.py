@@ -1,4 +1,3 @@
-import MainboardComms as drive
 import numpy as np
 def readThrowStr(filename):
     f = open(filename)
