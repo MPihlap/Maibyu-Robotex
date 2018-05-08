@@ -1,2 +1,0 @@
-field=A # which field we are on, A/B
-robotName=A # Robot name A/B/C/D
