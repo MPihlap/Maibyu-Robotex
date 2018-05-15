@@ -7,6 +7,11 @@ import time
 class Mainboard:
     def commandThread(self):
         while self.running:
+            if self.currentSpeed < self.targetSpeed:
+                self.currentSpeed += 1
+                self.speed1 = int(self.wheelLogic(-self.currentSpeed, self.wheelone, self.suund))
+                self.speed2 = int(self.wheelLogic(-self.currentSpeed, self.wheeltwo, self.suund))
+                self.speed3 = int(self.wheelLogic(-self.currentSpeed, self.wheelthree, self.suund))
             time.sleep(0.002)
             # print(self.speed1)
             vastus = self.ser.read(19)
@@ -29,6 +34,8 @@ class Mainboard:
 
 
     def __init__(self):
+        self.targetSpeed = 0
+        self.currentSpeed = 0
         self.rfcommand = ""
         self.running = True
         self.w = threading.Thread(name='commandThread', target=self.commandThread)
@@ -109,10 +116,5 @@ class Mainboard:
         self.throwSpeed = speed
 
     def setspeed(self, suund, speed):
-        if speed - self.lastSpeed > 50:
-            newSpeed = self.lastSpeed + 2
-            self.lastSpeed = newSpeed
-            speed = newSpeed
-        self.speed1 = int(self.wheelLogic(-speed, self.wheelone, suund))
-        self.speed2 = int(self.wheelLogic(-speed, self.wheeltwo, suund))
-        self.speed3 = int(self.wheelLogic(-speed, self.wheelthree, suund))
+        self.targetSpeed = speed
+        self.suund = suund
