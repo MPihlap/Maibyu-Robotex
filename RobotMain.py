@@ -23,7 +23,13 @@ throwStrengths = sorted(readThrowStr("visketugevused.csv"))
 teamPink = True
 moveMid = False
 startLimit = 75
-
+Kp = 0.1
+Ki = 0.00
+Kd = 0.02
+previous_error = 0
+integral = 0
+MAX_SPEED = 20
+MIN_SPEED = 4
 circlingBall = False
 makeThrow = False
 keskX = 307
@@ -67,6 +73,18 @@ def throwStrength(distance):
             return throwStrengths[0][1]
     return 1600
 print("Press 'p' to start: ")
+
+def calculateSpeedWithPID(objDistance):
+    global integral
+    error = abs(keskX - objDistance)
+    integral += error
+    speed = Kp * error + Ki * integral
+    print(speed)
+    if speed > MAX_SPEED:
+        return MAX_SPEED
+    elif speed < MIN_SPEED:
+        return MIN_SPEED
+    return speed
 
 
 while True:
@@ -130,9 +148,11 @@ while True:
                     circlingBall = False
                 if basketx != -1: # If basket is detected
                     if basketx < keskX:
-                        drive.circleBallRight(7)
+                        speed = calculateSpeedWithPID(basketx)
+                        drive.circleBallRight(speed)
                     else:
-                        drive.circleBallLeft(7)
+                        speed = calculateSpeedWithPID(basketx)
+                        drive.circleBallLeft(speed)
                     basketIsMiddle = isMiddle(basketx)
                     ballIsMiddle = ballMiddle(ballx)
                     if basketIsMiddle:
