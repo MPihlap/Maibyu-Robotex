@@ -3,15 +3,16 @@ import math
 import threading
 import time
 
-
-class Mainboard:
-    def commandThread(self):
-        while self.running:
-            if self.currentSpeed < self.targetSpeed:
+""" if self.currentSpeed < self.targetSpeed:
                 self.currentSpeed += 1
                 self.speed1 = int(self.wheelLogic(-self.currentSpeed, self.wheelone, self.suund))
                 self.speed2 = int(self.wheelLogic(-self.currentSpeed, self.wheeltwo, self.suund))
                 self.speed3 = int(self.wheelLogic(-self.currentSpeed, self.wheelthree, self.suund))
+"""
+
+class Mainboard:
+    def commandThread(self):
+        while self.running:
             time.sleep(0.002)
             # print(self.speed1)
             vastus = self.ser.read(19)
@@ -53,7 +54,10 @@ class Mainboard:
         self.wheeltwo = 120
         self.wheelthree = 240
         self.gameOn = False
-        self.ser = serial.Serial('COM3', baudrate=9600, timeout=0.01)
+        #windows
+        #self.ser = serial.Serial('COM3', baudrate=9600, timeout=0.01)
+        #Linux
+        self.ser = serial.Serial('/dev/ttyACM0', timeout=0.01,baudrate=9600)
         self.lastSpeed = 0
         self.w.start()
 
@@ -116,5 +120,8 @@ class Mainboard:
         self.throwSpeed = speed
 
     def setspeed(self, suund, speed):
-        self.targetSpeed = speed
-        self.suund = suund
+        #self.targetSpeed = speed
+        #self.suund = suund
+        self.speed1 = int(self.wheelLogic(-speed, self.wheelone, suund))
+        self.speed2 = int(self.wheelLogic(-speed, self.wheeltwo, suund))
+        self.speed3 = int(self.wheelLogic(-speed, self.wheelthree, suund))

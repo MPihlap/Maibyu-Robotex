@@ -2,10 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5f82d7a0-e222-4833-8f8c-a6a04e1d900c" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/maibyuGit.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/maibyuGit.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/VaravsinineB.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ImageProcessing.py" beforeDir="false" afterPath="$PROJECT_DIR$/ImageProcessing.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MainboardComms.py" beforeDir="false" afterPath="$PROJECT_DIR$/MainboardComms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pall.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Pall.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RobotMain.py" beforeDir="false" afterPath="$PROJECT_DIR$/RobotMain.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tests/ThreshFinder.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/ThreshFinder.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -25,8 +28,8 @@
       <file leaf-file-name="MainboardComms.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/MainboardComms.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="15">
-              <caret line="78" column="8" selection-start-line="78" selection-start-column="8" selection-end-line="78" selection-end-column="8" />
+            <state relative-caret-position="-1398">
+              <caret line="17" column="22" selection-start-line="17" selection-start-column="22" selection-end-line="17" selection-end-column="22" />
             </state>
           </provider>
         </entry>
@@ -34,13 +37,39 @@
       <file leaf-file-name="RobotMain.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/RobotMain.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="15">
-              <caret line="103" column="20" lean-forward="true" selection-start-line="103" selection-start-column="20" selection-end-line="103" selection-end-column="20" />
+            <state relative-caret-position="296">
+              <caret line="31" column="13" selection-start-line="31" selection-start-column="13" selection-end-line="31" selection-end-column="13" />
               <folding>
                 <element signature="e#0#29#0" expanded="true" />
               </folding>
             </state>
           </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ImageProcessing.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ImageProcessing.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-900">
+              <caret line="15" column="35" lean-forward="true" selection-start-line="15" selection-start-column="35" selection-end-line="15" selection-end-column="35" />
+              <folding>
+                <element signature="e#0#10#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ThreshFinder.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Tests/ThreshFinder.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="221">
+              <caret line="122" column="36" selection-start-line="122" selection-start-column="36" selection-end-line="122" selection-end-column="36" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="VaravsinineB.txt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/VaravsinineB.txt">
+          <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
       <file leaf-file-name="visketugevused.csv" pinned="false" current-in-tab="false">
@@ -88,6 +117,8 @@
       <find>radius</find>
       <find>isBall</find>
       <find>cam</find>
+      <find>mustpiir</find>
+      <find>team</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -107,6 +138,8 @@
         <option value="$PROJECT_DIR$/eeee.py" />
         <option value="$PROJECT_DIR$/Stateboys.txt" />
         <option value="$PROJECT_DIR$/StateMachineImplTest.py" />
+        <option value="$PROJECT_DIR$/Tests/ThreshFinder.py" />
+        <option value="$PROJECT_DIR$/ImageProcessing.py" />
         <option value="$PROJECT_DIR$/MainboardComms.py" />
         <option value="$PROJECT_DIR$/RobotMain.py" />
       </list>
@@ -123,6 +156,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -144,12 +178,19 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -163,7 +204,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.ThreshFinder">
+  <component name="RunManager" selected="Python.RobotMain">
     <configuration name="RobotMain" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="maibyuGit" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -300,8 +341,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.ThreshFinder" />
         <item itemvalue="Python.RobotMain" />
+        <item itemvalue="Python.ThreshFinder" />
         <item itemvalue="Python.driveTest" />
         <item itemvalue="Python.eeee" />
         <item itemvalue="Python.testStuff" />
@@ -319,22 +360,29 @@
       <option name="presentableId" value="Default" />
       <updated>1506251897848</updated>
     </task>
+    <task id="LOCAL-00001" summary="This commit brought to you by Pycharm from Ubuntu. Pls no breakski">
+      <created>1526651301405</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1526651301406</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="65" y="24" width="959" height="744" extended-state="0" />
-    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24817519" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24817519" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.37760416" />
       <window_info anchor="bottom" id="Version Control" order="10" />
       <window_info anchor="bottom" id="Python Console" order="8" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.3773585" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="9" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -342,7 +390,7 @@
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32861635" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -356,23 +404,16 @@
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="This commit brought to you by Pycharm from Ubuntu. Pls no breakski" />
+    <option name="LAST_COMMIT_MESSAGE" value="This commit brought to you by Pycharm from Ubuntu. Pls no breakski" />
+  </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <option name="time" value="2" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/Stateboys.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/testStuff.py" />
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/track.py" />
     <entry file="file://$PROJECT_DIR$/MainboardComms.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -565,17 +606,37 @@
     <entry file="file://$PROJECT_DIR$/visketugevused.csv">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
+    <entry file="file://$PROJECT_DIR$/VaravsinineB.txt">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/ThreshFinder.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="122" column="36" selection-start-line="122" selection-start-column="36" selection-end-line="122" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ImageProcessing.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-900">
+          <caret line="15" column="35" lean-forward="true" selection-start-line="15" selection-start-column="35" selection-end-line="15" selection-end-column="35" />
+          <folding>
+            <element signature="e#0#10#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/MainboardComms.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="78" column="8" selection-start-line="78" selection-start-column="8" selection-end-line="78" selection-end-column="8" />
+        <state relative-caret-position="-1398">
+          <caret line="17" column="22" selection-start-line="17" selection-start-column="22" selection-end-line="17" selection-end-column="22" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/RobotMain.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="103" column="20" lean-forward="true" selection-start-line="103" selection-start-column="20" selection-end-line="103" selection-end-column="20" />
+        <state relative-caret-position="296">
+          <caret line="31" column="13" selection-start-line="31" selection-start-column="13" selection-end-line="31" selection-end-column="13" />
           <folding>
             <element signature="e#0#29#0" expanded="true" />
           </folding>

@@ -5,7 +5,7 @@ import numpy as np
 MIN_BASKET_AREA = 400
 MIN_BALL_AREA = 30
 greenLower, greenUpper = readin("Pall.txt")
-borderLower, borderUpper = readin("mustpiir.txt")
+##borderLower, borderUpper = readin("mustpiir.txt")
 teamPink = True
 basketLower = None
 basketUpper = None
@@ -15,7 +15,7 @@ kernel = np.ones((2, 2), np.uint8)
 def setOpposingBasketThresh(teamPink):
     global basketLower, basketUpper
     if teamPink:  # Attacking blue basket
-        basketLower, basketUpper = readin("VaravsinineB.txt")
+        basketLower, basketUpper = readin("VaravSinineB.txt")
     else:  # Attacking pink basket
         basketLower, basketUpper = readin("VaravLillaB.txt")
 

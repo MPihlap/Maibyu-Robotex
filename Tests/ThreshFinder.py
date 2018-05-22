@@ -43,8 +43,6 @@ def readin(filename):
     return np.array(alam), np.array(korgem)
 
 
-cap.set(18,False)
-
 cv2.namedWindow('image')
 cv2.createTrackbar('h1','image',0,179,nothing)         #loob trackbarid pildist varvide eraldamiseks
 cv2.createTrackbar('h2','image',179,179,nothing)
@@ -78,7 +76,7 @@ while True:
     upper = np.array([h2,s2,v2])
     #Threshold the image
     mask = cv2.inRange(hsv,lower,upper)
-    cv2.imshow('image', mask)
+    #cv2.imshow('image', mask)
 
     res = cv2.bitwise_and(hsv, hsv, mask=mask)           #uhendan hsv pildi maskitud pildiga
     opening = cv2.morphologyEx(res, cv2.MORPH_OPEN, kernel)  # tootlen pilti, et eemaldada ebavajalikud osad
@@ -122,6 +120,6 @@ while True:
     if k == 27:
         L = [h1, h2, s1, s2, v1, v2] # salvestan praegused h1-v2 muutujad, et need kirjutada faili
         print('olen siin')
-        rememberpos(L, "VaravLillaB.txt")
+        rememberpos(L, "VaravSinineB.txt")
         break
 cv2.destroyAllWindows()
