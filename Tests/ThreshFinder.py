@@ -6,6 +6,7 @@ import cv2
 print(cv2.__version__)
 
 cap = cv2.VideoCapture(0)
+cap.set(cv2.CAP_PROP_FPS,60)
 
 img = np.zeros((480, 640, 3), np.uint8) # tuhi must pilt , selle peale joonistatakse kontuurid
 kernel = np.ones((2,2), np.uint8)       # tuhi valge pilt, kasutatakse opening ja closing juures
@@ -120,6 +121,6 @@ while True:
     if k == 27:
         L = [h1, h2, s1, s2, v1, v2] # salvestan praegused h1-v2 muutujad, et need kirjutada faili
         print('olen siin')
-        rememberpos(L, "VaravSinineB.txt")
+        rememberpos(L, "Pall.txt")
         break
 cv2.destroyAllWindows()

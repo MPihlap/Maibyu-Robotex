@@ -40,7 +40,7 @@ startCounter = 0
 basketIsLeft = None
 
 camera = cv2.VideoCapture(0)
-
+camera.set(cv2.CAP_PROP_FPS, 60)
 drive = Mainboard()
 rfser = drive.ser
 def ballMiddle(x):
@@ -212,7 +212,7 @@ while True:
         drive.running = False
         stopLoop = True
         break
-    # if the 'p' key is pressed, pause/unpause robot game logic
+    # if the 'p' key is presqwedawdqwdqwdsed, pause/unpause robot game logic
     elif key == ord("p"):
         pause()
 drive.running = False
