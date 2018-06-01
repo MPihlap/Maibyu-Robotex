@@ -82,8 +82,10 @@ while True:
     res = cv2.bitwise_and(hsv, hsv, mask=mask)           #uhendan hsv pildi maskitud pildiga
     opening = cv2.morphologyEx(res, cv2.MORPH_OPEN, kernel)  # tootlen pilti, et eemaldada ebavajalikud osad
     cv2.imshow('opening', opening)
+    blur = cv2.GaussianBlur(opening,(5,5),0)
+    cv2.imshow('blur',blur)
     # suurima kontuuri leidmine
-    pilt = cv2.cvtColor(opening, cv2.COLOR_BGR2GRAY)  # findcontours nouab halliks tehtud pilti
+    pilt = cv2.cvtColor(blur, cv2.COLOR_BGR2GRAY)  # findcontours nouab halliks tehtud pilti
     im2, contours, hierarchy = cv2.findContours(pilt, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
 
@@ -121,6 +123,6 @@ while True:
     if k == 27:
         L = [h1, h2, s1, s2, v1, v2] # salvestan praegused h1-v2 muutujad, et need kirjutada faili
         print('olen siin')
-        rememberpos(L, "Pall.txt")
+        rememberpos(L, "VaravSinineB.txt")
         break
 cv2.destroyAllWindows()
