@@ -96,9 +96,9 @@ while True:
         distBuffer.popleft()
     ballIsMiddle = False
     basketIsMiddle = False
-    bothMiddle = False
     ballx = -1
     basketx = -1
+    currentState = ""
 
     #toimub ainult viskel
     if counter > 60:
@@ -135,6 +135,7 @@ while True:
             startCounter += 1
         elif makeThrow:  # If we have spun around the ball and are going to throw
             counter += 1
+            currentState = "vise"
             drive.setspeed(90, 10)
             if counter == 1:
                 if len(distBuffer) > 0:
@@ -144,6 +145,7 @@ while True:
                 drive.startThrow(speed)
         elif ballx != -1: # If ball is detected
             if circlingBall:  # When we are spinning around the ball
+                currentState = "keerlen palli ümber"
                 if bally < 400:
                     circlingBall = False
                 if basketx != -1: # If basket is detected
@@ -172,6 +174,7 @@ while True:
                     else:
                         drive.circleBallLeft(20)
             elif bally > 400:  # If we are close enough to the ball after approaching it
+                currentState = "palli lähedal"
                 if ballIsMiddle and not makeThrow:
                     drive.circleBallLeft(9)
                     circlingBall = True
@@ -182,12 +185,12 @@ while True:
                         drive.setspeed(0, 10)
 
             else:
+                currentState = "liigun pallini"
                 drive.setspeed(angle, moveSpeed(bally))
         elif counter == 0:
             drive.spinright()
 
         if ballIsMiddle & basketIsMiddle:
-            bothMiddle = True
             cv2.putText(frame, "Molemad on keskel! :O", (10, 370), cv2.FONT_HERSHEY_DUPLEX, 1,
                         cv2.COLOR_YUV420sp2GRAY)
     center = None
