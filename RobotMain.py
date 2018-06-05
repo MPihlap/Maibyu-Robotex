@@ -98,15 +98,12 @@ while True:
     basketIsMiddle = False
     ballx = -1
     basketx = -1
-    currentState = ""
+    currentState = "mang seisab"
 
     #toimub ainult viskel
     if counter > 60:
         counter = 0
         makeThrow = False
-        drive.stopThrow()
-        distBuffer.clear()
-
     #toimub iga kord
     if len(basketCnts) > 0:
         basketx, baskety, w, h = drawThing(frame, basketCnts, False)
@@ -145,7 +142,7 @@ while True:
                 drive.startThrow(speed)
         elif ballx != -1: # If ball is detected
             if circlingBall:  # When we are spinning around the ball
-                currentState = "keerlen palli ümber"
+                currentState = "keerlen palli umber"
                 if bally < 400:
                     circlingBall = False
                 if basketx != -1: # If basket is detected
@@ -174,7 +171,7 @@ while True:
                     else:
                         drive.circleBallLeft(20)
             elif bally > 400:  # If we are close enough to the ball after approaching it
-                currentState = "palli lähedal"
+                currentState = "palli lahedal"
                 if ballIsMiddle and not makeThrow:
                     drive.circleBallLeft(9)
                     circlingBall = True
@@ -198,7 +195,8 @@ while True:
     cv2.line(frame, (basketSmall, 0), (basketSmall, 480), (255, 0, 0), 1)
     cv2.line(frame, (basketLarge, 0), (basketLarge, 480), (255, 0, 0), 1)
     cv2.line(frame, (0 ,400),(640,400),(0,0,255),1)
-
+    cv2.putText(frame,"Olek: "+ currentState,(10,30), cv2.FONT_HERSHEY_DUPLEX, 1,
+                cv2.COLOR_YUV420sp2GRAY )
     # show the frame to our screen
     cv2.imshow("Frame", frame)
     key = cv2.waitKey(1) & 0xFF
